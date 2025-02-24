@@ -8,24 +8,23 @@
       * [3. Why you do (and don't) need containers](#3-why-you-do-and-dont-need-containers)
    * [Introduction to Docker](#introduction-to-docker)
       * [1. Running first Docker container](#1-running-first-docker-container)
-         * [<strong>Let's examine the command and the generated output step by step.</strong>](#lets-examine-the-command-and-the-generated-output-step-by-step)
       * [2. Managing Docker images](#2-managing-docker-images)
       * [3. Managing Docker containers](#3-managing-docker-containers)
       * [4. Working with Docker containers](#4-working-with-docker-containers)
       * [5.  Creating a new Docker image - Dockerfiles](#5--creating-a-new-docker-image---dockerfiles)
 * [Control how much memory and CPU the containers use](#control-how-much-memory-and-cpu-the-containers-use)
-   * [<strong>1. Limit RAM Usage in Docker</strong>](#1-limit-ram-usage-in-docker)
-      * [<strong>Hard Memory Limit (--memory)</strong>](#hard-memory-limit---memory)
-      * [<strong>Soft Memory Limit (--memory-reservation)</strong>](#soft-memory-limit---memory-reservation)
-      * [<strong>Disable Swap Usage (--memory-swap)</strong>](#disable-swap-usage---memory-swap)
-   * [<strong>2. Limit CPU Usage in Docker</strong>](#2-limit-cpu-usage-in-docker)
-      * [<strong>Limit CPU Cores (--cpus)</strong>](#limit-cpu-cores---cpus)
-      * [<strong>Control CPU Shares (--cpu-shares)</strong>](#control-cpu-shares---cpu-shares)
-      * [<strong>Restrict CPU Affinity (--cpuset-cpus)</strong>](#restrict-cpu-affinity---cpuset-cpus)
-   * [<strong>3. Combining CPU &amp; Memory Limits</strong>](#3-combining-cpu--memory-limits)
-   * [<strong>4. Check Resource Usage</strong>](#4-check-resource-usage)
-   * [<strong>Summary Table</strong>](#summary-table)
-   * [Limit hard disk usage](#limit-hard-disk-usage)
+   * [1. Limit RAM Usage in Docker](#1-limit-ram-usage-in-docker)
+      * [Hard Memory Limit (--memory)](#hard-memory-limit---memory)
+      * [Soft Memory Limit (--memory-reservation)](#soft-memory-limit---memory-reservation)
+      * [Disable Swap Usage (--memory-swap)](#disable-swap-usage---memory-swap)
+   * [2. Limit CPU Usage in Docker](#2-limit-cpu-usage-in-docker)
+      * [Limit CPU Cores (--cpus)](#limit-cpu-cores---cpus)
+      * [Control CPU Shares (--cpu-shares)](#control-cpu-shares---cpu-shares)
+      * [Restrict CPU Affinity (--cpuset-cpus)](#restrict-cpu-affinity---cpuset-cpus)
+   * [3. Combining CPU &amp; Memory Limits](#3-combining-cpu--memory-limits)
+   * [4. Check Resource Usage](#4-check-resource-usage)
+   * [5. Limit hard disk usage](#limit-hard-disk-usage)
+   * [Summary Table](#summary-table)
 * [Podman instead of Docker](#podman-instead-of-docker)
    * [Running Containers with Podman](#running-containers-with-podman)
 * [Exercises to train](#exercises-to-train)
@@ -633,17 +632,7 @@ This shows live stats for all running containers.
 
 ---
 
-## **Summary Table**
-| Flag | Docker Example | Description |
-|------|---------------|-------------|
-| `--memory=<size>` | `--memory=512m` | Max RAM usage |
-| `--memory-reservation=<size>` | `--memory-reservation=256m` | Soft memory limit |
-| `--memory-swap=<size>` | `--memory-swap=1g` | Total RAM + Swap |
-| `--cpus=<num>` | `--cpus=1.5` | Limit CPU cores |
-| `--cpu-shares=<num>` | `--cpu-shares=512` | Set CPU priority |
-| `--cpuset-cpus="<cores>"` | `--cpuset-cpus="0,1"` | Restrict to certain CPU cores |
-
-## Limit hard disk usage
+## 5. Limit hard disk usage
 
 Docker also has an option for limit hard disk space of a container, as follows:
 
@@ -653,10 +642,17 @@ docker run -it --storage-opt size=500m  python:3.10.2-slim-bullseye
 
 However, this will work only if the file system has quotas enabled, which is not the case on our practice server.
 
+---
 
-
-
-
+## **Summary Table**
+| Flag | Docker Example | Description |
+|------|---------------|-------------|
+| `--memory=<size>` | `--memory=512m` | Max RAM usage |
+| `--memory-reservation=<size>` | `--memory-reservation=256m` | Soft memory limit |
+| `--memory-swap=<size>` | `--memory-swap=1g` | Total RAM + Swap |
+| `--cpus=<num>` | `--cpus=1.5` | Limit CPU cores |
+| `--cpu-shares=<num>` | `--cpu-shares=512` | Set CPU priority |
+| `--cpuset-cpus="<cores>"` | `--cpuset-cpus="0,1"` | Restrict to certain CPU cores |
 
 
 
