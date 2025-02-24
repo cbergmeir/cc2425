@@ -26,6 +26,7 @@
    * [5. Limit hard disk usage](#5-limit-hard-disk-usage)
    * [Summary Table](#summary-table)
 * [Podman instead of Docker](#podman-instead-of-docker)
+   * [Converting Images and Containers](#converting-images-and-containers)
    * [Running Containers with Podman](#running-containers-with-podman)
 * [Exercises to train](#exercises-to-train)
 
@@ -659,7 +660,7 @@ However, this will work only if the file system has quotas enabled, which is not
 
 Podman is designed to be a drop-in replacement for Docker, providing a similar set of commands without the need for a daemon. This design enhances security and allows for rootless container management. Podman offers a Docker-compatible command-line interface, allowing for a seamless transition. 
 
-# Converting Images and containers
+## Converting Images and Containers
 
 If you already have images or containers, you can convert them with `fly-to-podman`: https://github.com/Edu4rdSHL/fly-to-podman
 
