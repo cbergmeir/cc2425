@@ -23,7 +23,7 @@
       * [Restrict CPU Affinity (--cpuset-cpus)](#restrict-cpu-affinity---cpuset-cpus)
    * [3. Combining CPU &amp; Memory Limits](#3-combining-cpu--memory-limits)
    * [4. Check Resource Usage](#4-check-resource-usage)
-   * [5. Limit hard disk usage](#limit-hard-disk-usage)
+   * [5. Limit hard disk usage](#5-limit-hard-disk-usage)
    * [Summary Table](#summary-table)
 * [Podman instead of Docker](#podman-instead-of-docker)
    * [Running Containers with Podman](#running-containers-with-podman)
@@ -456,19 +456,16 @@ Commands to use for the Dockerfile:
 Firstly, let’s create a Dockerfile (you can same this under the name `mydockerfile`, e.g., using vim):
 
 ```
-    FROM centos:7
-    MAINTAINER manuelparra
+FROM rockylinux:8
 
-    LABEL Remarks="This is a dockerfile example for CentOS system"
+LABEL Remarks="This is a dockerfile example for CentOS system"
 
-    RUN yum -y update && yum -y install httpd && \
+RUN yum -y update && yum -y install httpd && \
             yum clean all
 
-    
-    EXPOSE 80
+EXPOSE 80
 
-    WORKDIR /root
-
+WORKDIR /root
 ```
 
 This is just a Dockerfile to create a container with a simple HTTPD service (Apache).
@@ -519,6 +516,8 @@ And now run the container with this image:
 ```
 docker run -d -p 80:80 nodeapp
 ```
+
+This may give you an error on the server as port 80 may already be in use.
 
 # Control how much memory and CPU the containers use
 
@@ -658,15 +657,11 @@ However, this will work only if the file system has quotas enabled, which is not
 
 # Podman instead of Docker
 
-Podman is designed to be a drop-in replacement for Docker, providing a similar set of commands without the need for a daemon. This design enhances security and allows for rootless container management. Podman offers a Docker-compatible command-line interface, allowing for a seamless transition. To facilitate the transition, you can alias Docker commands to Podman:
+Podman is designed to be a drop-in replacement for Docker, providing a similar set of commands without the need for a daemon. This design enhances security and allows for rootless container management. Podman offers a Docker-compatible command-line interface, allowing for a seamless transition. 
 
+# Converting Images and containers
 
-```bash
-alias docker=podman
-```
-
-
-This alias enables the use of familiar Docker commands with Podman. For example, running `docker ps` will execute `podman ps` under the hood.
+If you already have images or containers, you can convert them with `fly-to-podman`: https://github.com/Edu4rdSHL/fly-to-podman
 
 ## Running Containers with Podman
 
@@ -711,7 +706,13 @@ The basic commands for managing containers in Podman mirror those of Docker. Her
   podman rm mycontainer
   ```
 
+- **Building a container:**
 
+  
+```bash
+  podman build -f mydockerfile . -t myfirstcontainer
+  ```
+  
 These commands function similarly to their Docker counterparts, making it straightforward for you to adapt.
 
 **3. Enforcing Resource Constraints with Podman**

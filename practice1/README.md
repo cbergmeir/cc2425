@@ -14,7 +14,8 @@
 
 ## 1. Objetivos de la práctica
 - Crear servicios interconectados usando contenedores.
-- Conocer el despliegue de servicios en contenedores usando docker, docker-compose y kubernetes.
+- Conocer el despliegue de servicios en contenedores usando docker/podman, docker/podman-compose y kubernetes.
+- Se puede implementar con docker o podman, mi recomendación es usar podman
 - Implementar distintas arquitecturas de servicios en contenedores en función de los requisitos del sistema. 
 - Gestionar la escalabilidad de los servicios.
 - Gestionar réplicas y herramientas de monitoreo y balanceo de carga. 
@@ -34,7 +35,7 @@ Puedes probar una demo de ownCloud [aquí](https://demo.owncloud.org).
 
 **El objetivo de esta práctica es desplegar nuestro propio servicio de ownCloud**. Con este despliegue, estaremos dando servicio a una empresa ficticia. Según el tamaño de la empresa, sus necesidades y su infraestructura, se recomendarán distintas arquitecturas cloud para el despliegue de este servicio. De este modo, **un objetivo secundario de esta práctica es conseguir desplegar este servicio con distintas arquitecturas y empleando distintas soluciones tecnológicas del Cloud**.     
 
-Para realizar este despliegue, se requiere que el estudiante utilice tecnologías Cloud basadas en contenedores utilizando los motores de contenerización y de orquestación de contenedores vistas en las sesiones anteriores: Docker, Docker-Compose y Kubernetes. 
+Para realizar este despliegue, se requiere que el estudiante utilice tecnologías Cloud basadas en contenedores utilizando los motores de contenerización y de orquestación de contenedores vistas en las sesiones anteriores: Docker/Podman, Docker/Podman-compose y Kubernetes. 
 
 ### 2.2. Tareas propuestas
 
@@ -47,7 +48,7 @@ Para realizar este despliegue, se requiere que el estudiante utilice tecnología
 - LDAP (autenticación de usuarios)
 
 
-Para este despliegue puede utilizarse Docker y Docker-compose. 
+Para este despliegue puede utilizarse Docker/Podman y Docker/Podman-compose. 
 
 **Tareas adicionales para conseguir la máxima puntuación en la práctica**: 
 
@@ -58,9 +59,9 @@ Para este despliegue puede utilizarse Docker y Docker-compose.
 - Redis
 - LDAP (autenticación de usuarios)
 - Replicación de, al menos, uno de los microservicios anteriores (Servidor web, LDAP o MariaDB). 
-Para este despliegue puede utilizarse Docker, Docker-compose o Kubernetes. 
+Para este despliegue puede utilizarse Docker/Podman, Docker/Podman-compose o Kubernetes. 
 
-3.- Diseño y despliegue de la tarea 1 o 2 utilizando escalonadamente Docker, Docker-compose y Kubernetes. 
+3.- Diseño y despliegue de la tarea 1 o 2 utilizando escalonadamente Docker/Podman, Docker/Podman-compose y Kubernetes. 
 
 
 ### 2.3. Implementación y despliegue de los servicios con contenedores
@@ -69,13 +70,13 @@ El objetivo de esta práctica es que el alumno sea capaz de poner en marcha un s
 
 Para esta implementación con contenedores, se sugiere realizar el despliegue de manera escalonada en cada una de las siguientes modalidades:
 
-####  Docker
+####  Docker/Podman
 
 Para este despligue es necesario desarrollar cada uno de los contenedores de forma individual para que alberguen cada uno de los servicios indicados. En esta modalidad, los contenedores tienen que ejecutarse sin un orquestador, lo que requerirá que se cree un script para poder desplegar y también bajar todos los servicios. 
 
-####  Docker-compose
+####  Docker/Podman-compose
 
-Para este despliegue se requiere el uso de la herramienta de composición de servicios `docker-compose` que provee Docker. Al igual que la anterior, se requiere que se incluyan todos los sevicios dentro del fichero de descripción de servicios a desplegar en `docker-compose`.
+Para este despliegue se requiere el uso de la herramienta de composición de servicios `docker compose` o `podman compose` que provee Docker o Podman. Al igual que la anterior, se requiere que se incluyan todos los sevicios dentro del fichero de descripción de servicios a desplegar en `docker compose`.
 
 ####  Kubernetes
 
