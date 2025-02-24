@@ -309,7 +309,7 @@ Using a `hello-world` image is one thing, actually doing some work with containe
 
 We are going to experiment with a much more useful image: an official Python 3.10.2 image based on Debian bullseye (it's a slimmed down version to be more specific - 123MB vs over 900MB for the 'traditional' bullseye).
 
-Instead of just running the image, we fill first pull it:
+Instead of just running the image, we will first pull it:
 
 ```bash
 $ docker image pull python:3.10.2-slim-bullseye
@@ -350,7 +350,7 @@ Python 3.10.2
 
 That's the version we expected to see based on the image we're using. Most importantly, this is the version that is shipped inside this Python image and executed inside our container. You do not have to have Python installed on your host machine, or can have a completely different version (for example I am running 3.8.5 on my host) - Python inside your container is not even aware of that other version.
 
-But let's do some actual work. We will do it in two ways. First we will launch a very simple script that you can download from [**here**](files/script.py). You do not have to be familiar with Python to understand what it does: we simply print out a welcome message and perform some very basic operations.
+But let's do some actual work. We will do it in two ways. First we will launch a very simple script that you can download from [**here**](./script.py). On the command line, you can use `wget` to download it, but make sure to download the "raw" version. You do not have to be familiar with Python to understand what it does: we simply print out a welcome message and perform some very basic operations.
 
 As we have mentioned before, containers by default do not know much about their host machine. Most importantly, they do not share any files with it, so they will not be able to find our Python script and run it. We therefore have to make it available inside the container.  We launch our image it with the additional options that *mount* the data inside the container:
 
@@ -434,7 +434,7 @@ Commands to use for the Dockerfile:
 
 - `ENV` – Sets environment variables.
 
-Firstly, let’s create a Dockerfile:
+Firstly, let’s create a Dockerfile (you can same this under the name `mydockerfile`, e.g., using vim):
 
 ```
     FROM centos:7
@@ -457,7 +457,7 @@ This is just a Dockerfile to create a container with a simple HTTPD service (Apa
 To build it:
 
 ```
-docker build . -t myfirstcontainer
+docker build -f mydockerfile . -t myfirstcontainer
 ```
 
 Now we are going to create a more complex application from a Dockerfile that serves a nodejs application.
@@ -471,7 +471,7 @@ COPY . /app
 # Install required system packages
 RUN apt-get update
 RUN apt-get -y install imagemagick curl software-properties-common gnupg vim ssh
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash -
 RUN apt-get -y install nodejs
 # Install NPM dependencies
 RUN npm install --prefix /app
@@ -485,7 +485,7 @@ Clone this [repository](https://github.com/juan131/dockerfile-best-practices) to
 Then run:
 
 ```
-docker build . -t nodeapp
+docker build -f nodeapp . -t nodeapp
 ```
 
 Once this command is executed, you will have the image stored in Docker ready to launch the container:
@@ -501,8 +501,255 @@ And now run the container with this image:
 docker run -d -p 80:80 nodeapp
 ```
 
+# Control how much memory and CPU the containers use
 
-### Exercises to train
+In Docker, you can **limit CPU and memory usage** using `docker run` flags. Here’s how you can do it:
+
+---
+
+## **1. Limit RAM Usage in Docker**
+### **Hard Memory Limit (`--memory`)**
+To restrict a container’s memory usage to **512MB**, use:
+
+```bash
+docker container run --memory=512m --name python-test-4 -it python:3.10.2-slim-bullseye
+```
+
+- The container **cannot exceed** 512MB.
+- If the container tries to use more memory, the **Out-of-Memory (OOM) killer** may terminate it.
+
+Other formats:
+- `--memory=1g` → **1GB limit**
+- `--memory=256m` → **256MB limit**
+
+---
+
+### **Soft Memory Limit (`--memory-reservation`)**
+This is a **soft limit**: the container tries to stay within this limit but can exceed it **if needed**.
+
+```bash
+docker run -it --memory=1g --memory-reservation=512m python:3.10.2-slim-bullseye
+```
+
+- The container starts with **512MB**.
+- If memory pressure increases, it **may** be reduced to **512MB**.
+
+---
+
+### **Disable Swap Usage (`--memory-swap`)**
+By default, if a container reaches the memory limit, it can start using **swap space**. To **disable swap**, set:
+
+```bash
+docker run -it --memory=512m --memory-swap=512m python:3.10.2-slim-bullseye
+```
+
+- This **prevents** the container from using swap.
+- If you want some swap, set it larger than `--memory`:
+
+```bash
+docker run -it --memory=512m --memory-swap=1g python:3.10.2-slim-bullseye
+```
+
+- This allows **512MB RAM + 512MB Swap = 1GB total**.
+
+---
+
+## **2. Limit CPU Usage in Docker**
+### **Limit CPU Cores (`--cpus`)**
+To restrict a container to **1.5 CPU cores**, use:
+
+```bash
+docker run -it --cpus=1.5 python:3.10.2-slim-bullseye
+```
+
+- If the system has **4 cores**, the container can only use **1.5**.
+
+---
+
+### **Control CPU Shares (`--cpu-shares`)**
+This sets **relative priority** (not an absolute limit). Containers with **higher shares** get more CPU time.
+
+```bash
+docker run -it --cpu-shares=512 python:3.10.2-slim-bullseye
+```
+
+- Default is **1024**.
+- A container with `512` gets **half the CPU time** of one with `1024`.
+
+---
+
+### **Restrict CPU Affinity (`--cpuset-cpus`)**
+To **assign specific CPU cores**, use:
+
+```bash
+docker run -it --cpuset-cpus="0,1" python:3.10.2-slim-bullseye
+```
+
+- The container can **only run on cores 0 and 1**.
+- this may not work on our practice server
+
+---
+
+## **3. Combining CPU & Memory Limits**
+You can **combine these flags** for better resource control:
+
+```bash
+docker run -it --memory=1g --cpus=2 python:3.10.2-slim-bullseye
+```
+
+- **1GB RAM limit**.
+- **Uses max 2 CPU cores**.
+
+---
+
+## **4. Check Resource Usage**
+To monitor **CPU & Memory** in real time:
+
+```bash
+docker stats
+```
+
+This shows live stats for all running containers.
+
+---
+
+## **Summary Table**
+| Flag | Docker Example | Description |
+|------|---------------|-------------|
+| `--memory=<size>` | `--memory=512m` | Max RAM usage |
+| `--memory-reservation=<size>` | `--memory-reservation=256m` | Soft memory limit |
+| `--memory-swap=<size>` | `--memory-swap=1g` | Total RAM + Swap |
+| `--cpus=<num>` | `--cpus=1.5` | Limit CPU cores |
+| `--cpu-shares=<num>` | `--cpu-shares=512` | Set CPU priority |
+| `--cpuset-cpus="<cores>"` | `--cpuset-cpus="0,1"` | Restrict to certain CPU cores |
+
+## Limit hard disk usage
+
+Docker also has an option for limit hard disk space of a container, as follows:
+
+```bash
+docker run -it --storage-opt size=500m  python:3.10.2-slim-bullseye
+```
+
+However, this will work only if the file system has quotas enabled, which is not the case on our practice server.
+
+
+
+
+
+
+
+
+# Podman instead of Docker
+
+Podman is designed to be a drop-in replacement for Docker, providing a similar set of commands without the need for a daemon. This design enhances security and allows for rootless container management. Podman offers a Docker-compatible command-line interface, allowing for a seamless transition. To facilitate the transition, you can alias Docker commands to Podman:
+
+
+```bash
+alias docker=podman
+```
+
+
+This alias enables the use of familiar Docker commands with Podman. For example, running `docker ps` will execute `podman ps` under the hood.
+
+## Running Containers with Podman
+
+The basic commands for managing containers in Podman mirror those of Docker. Here are some common operations:
+
+- **Pulling an image:**
+
+  
+```bash
+  podman pull ubuntu:latest
+  ```
+
+
+- **Running a container:**
+
+  
+```bash
+  podman run -it --name mycontainer ubuntu:latest
+  ```
+
+
+- **Listing running containers:**
+
+  
+```bash
+  podman ps
+  ```
+
+
+- **Stopping a container:**
+
+  
+```bash
+  podman stop mycontainer
+  ```
+
+
+- **Removing a container:**
+
+  
+```bash
+  podman rm mycontainer
+  ```
+
+
+These commands function similarly to their Docker counterparts, making it straightforward for you to adapt.
+
+**3. Enforcing Resource Constraints with Podman**
+
+Podman allows you to set resource limits on containers to control their CPU and memory usage in a similar way to Docker. This is particularly useful in multi-tenant environments or when running resource-intensive applications.
+
+- **Limiting CPU Usage:**
+
+  To restrict a container to use a specific number of CPUs, use the `--cpus` flag:
+
+  
+```bash
+  podman run -it --cpus=1.5 ubuntu:latest
+  ```
+
+
+  This command limits the container to 1.5 CPUs.
+
+  Alternatively, you can set CPU shares to define the relative weight of CPU time allocated to the container:
+
+  
+```bash
+  podman run -it --cpu-shares=512 ubuntu:latest
+  ```
+
+
+Again, by default, containers have a CPU share of 1024. Setting it to 512 reduces the container's CPU weight compared to others.
+
+- **Restricting CPU Cores:**
+
+  To assign specific CPU cores to a container, use the `--cpuset-cpus` flag:
+
+  
+```bash
+  podman run -it --cpuset-cpus=0,1 ubuntu:latest
+  ```
+
+
+  This command restricts the container's execution to cores 0 and 1.
+
+- **Managing Volume Mounts:**
+
+  To mount a host directory into a container with specific permissions, use the `-v` flag:
+
+  
+```bash
+  podman run -it -v /host/data:/container/data:ro,Z ubuntu:latest
+  ```
+
+
+  In this example, `/host/data` is mounted to `/container/data` inside the container as read-only (`ro`). The `Z` option relabels the volume for SELinux.
+
+
+# Exercises to train
 - Dockerize a Node.js application following the instructions here: https://docs.docker.com/get-started/02_our_app/
 - Dockerize this Python App: https://github.com/scottbrady91/Python-Email-Verification-Script. 
 
