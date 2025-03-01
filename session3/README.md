@@ -138,7 +138,7 @@ While Docker focuses on **isolation**, Singularity focuses on **integration**.
 
 We will use Singularity for the remainder of the class.
 
-## Installing and Set-up Singularity
+## Installing and Set-up Singularity (not needed on our server)
 
 Here we will install the latest tagged release from GitHub. If you prefer to install a different version or to install Singularity in a different location, see these [Singularity docs](https://docs.sylabs.io/guides/latest/admin-guide/installation.html#).
 
@@ -345,7 +345,7 @@ The shell command allows you to open a new shell within your container and inter
 vagrant@ska-training:~$  singularity shell skatrainingplot_latest.sif
 ```
 
-Once executed you will be connected to the container (yopu will see a new prompt):
+Once executed you will be connected to the container (you will see a new prompt):
 
 ```
 Singularity skatrainingplot_latest.sif:~> 
@@ -367,7 +367,7 @@ uid=900(vagrant) gid=900(vagrant) groups=900(vagrant),27(sudo)
 
 **NOTE**
 
-If you use Singularity with the shell option and and image from `library://`, `docker://`, and `shub://` URIs this creates an ephemeral container that disappears when the shell is exited.
+If you use Singularity with the shell option and an image from `library://`, `docker://`, and `shub://` URIs this creates an ephemeral container that disappears when the shell is exited.
 
 ### Executing command from a container
 
@@ -453,7 +453,7 @@ ModuleNotFoundError: No module named 'numpy'
 
 ### Running a container
 
-Singularity containers can execute runscripts. That is, they allow that when calling them from Singularity with the exec option, they execute a scripts that define the actions a container should perform when someone runs it.
+Singularity containers can execute runscripts. That is, they allow that when calling them from Singularity with the exec option, they execute a script that defines the actions a container should perform when someone runs it.
 
 In this example for `lolcow_latest.sif` you can see a message, that is generated because for this container the developer has created a start point when you call Singularity with the option `run`.
 
@@ -472,7 +472,7 @@ vagrant@ska-training:~$ singularity run lolcow_latest.sif
 
 `run` also works with the `library://`, `docker://`, and `shub://` URIs. This creates an ephemeral container that runs and then disappears.
 
-Now we try with our container:
+Now we try with our container. **Don't worry if you get some errors in the following or the files are not generated, we will later generate our own version of the container that fixes these issues.**:
 
 ```
 vagrant@ska-training:~/builkd$ singularity run skatrainingplot_latest.sif 
@@ -527,7 +527,7 @@ hello.txt
 
 And now the question is, how can I create my own container with my software?
 
-With `build` option you can convert containers between the formats supported by Singularity. And you can use it in conjunction with a Singularity definition file to create a container from scratch and customized it to fit your needs.
+With `build` option you can convert containers between the formats supported by Singularity. And you can use it in conjunction with a Singularity definition file to create a container from scratch and customize it to fit your needs.
 
 
 ### Downloading a container from Docker Hub
@@ -535,12 +535,12 @@ With `build` option you can convert containers between the formats supported by 
 You can use build to download layers from Docker Hub and assemble them into Singularity containers.
 
 ```
-$ sudo singularity build lolcow.sif docker://godlovedc/lolcow
+$ singularity build lolcow.sif docker://godlovedc/lolcow
 ```
 
 ### Building containers from Singularity definition files
 
-Singularity definition files,  can be used as the target when building a container. Using the Docker equivalence, these would be the Dockerfile's we use to build an image.
+Singularity definition files,  can be used as the target when building a container. Using the Docker equivalence, these would be the Dockerfiles we use to build an image.
 
 Here you can see an example of a definition file `lolcow.def`:
 
@@ -549,8 +549,10 @@ Bootstrap: docker
 From: ubuntu:16.04
 
 %post
-    apt-get -y update
-    apt-get -y install fortune cowsay lolcat
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update || true
+    apt-get install -y fortune cowsay lolcat || true
+    dpkg --configure -a || true
 
 %environment
     export LC_ALL=C
@@ -563,7 +565,7 @@ From: ubuntu:16.04
 We can build it with:
 
 ```
-$ sudo singularity build lolcow.sif lolcow.def
+$ singularity build --fakeroot lolcow.sif lolcow.def
 ```
 
 Now we can see how the test container we have made for ska is built (`skatraining.def`):
@@ -573,13 +575,15 @@ Bootstrap: docker
 From: ubuntu:20.04
 
 %post
-apt-get update && apt-get install -y vim python3 python3-pip
+export DEBIAN_FRONTEND=noninteractive
+apt-get update || true
+apt-get install -y vim python3 python3-pip || true
+dpkg --configure -a || true
 pip3 install matplotlib
 pip3 install scipy
 pip3 install numpy
 
-cat << EOF > /plot.py
-
+cat > /plot.py << EOF
 import numpy as np
 import sys
 from scipy.interpolate import splprep, splev
@@ -588,7 +592,7 @@ import matplotlib.pyplot as plt
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 
-plotname = sys.argv[1] if len(sys.argv)>1 else "example.png"
+plotname = sys.argv[1] if len(sys.argv) > 1 else "example.png"
 
 N = 400
 t = np.linspace(0, 3 * np.pi, N)
@@ -603,14 +607,13 @@ print("-----------------------------------------------")
 print("SKA training: Git and Containers")
 print("Plot generated in " + plotname + " file.")
 print("-----------------------------------------------")
-EOF 
+EOF
 
 %runscript
   if [ $# -ne 1 ]; then
         echo "-----------------------------------------------"   
         echo "SKA training: Git and Containers"   
         echo "Plot generated in example.png by default, please provide an output plot file"
-        exit 1
   fi
   python3 /plot.py $1
 ```
@@ -618,7 +621,7 @@ EOF
 Then we build with:
 
 ```
-$ sudo singularity build skatraining.sif skatraining.def
+$ singularity build --fakeroot skatraining.sif skatraining.def
 ```
 
 We now explain each of the components of the build file:
@@ -644,7 +647,7 @@ And this is all for now with containers. In the following training sessions we w
 
 ### Exercises to train
 
-- Create a Singularity container for this Python App: https://github.com/scottbrady91/Python-Email-Verification-Script and run it to test it works. Make it portable so the Singularity container downloads the git repository.   
+- Create a Singularity container for this Python App: https://github.com/scottbrady91/Python-Email-Verification-Script and run it to test that it works. Make it portable so the Singularity container downloads the git repository.   
 
 
 
