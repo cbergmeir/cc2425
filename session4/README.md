@@ -661,13 +661,13 @@ Check if all the services are running.
 
 Grafana is an open-source platform for monitoring and observability that lets you visualize and explore the state of your systems. You can find Grafana Tutorials [here](https://grafana.com/tutorials/). This tutorial will just cover the first steps to log into Grafana and create a query to plot some of the metrics forwared from Prometheus. 
 
-Browse to http://localhost:3000 and log in to Grafana (username: admin, password: admin). The first time you log in, you’re asked to change your password (you can skip this). Once into Grafana, the first thing you see is the Home dashboard, which helps you get started. To the far left you can see the sidebar, a set of quick access icons for navigating Grafana.
+Browse to http://localhost:25147 and log in to Grafana (username: admin, password: admin). The first time you log in, you’re asked to change your password (you can skip this). Once into Grafana, the first thing you see is the Home dashboard, which helps you get started. To the far left you can see the sidebar, a set of quick access icons for navigating Grafana.
 
 To be able to visualize the metrics from Prometheus, you first need to add it as a data source in Grafana. In the sidebar, hover your cursor over the Configuration (gear) icon, and then click Data sources. Click Add data source. In the list of data sources, click Prometheus.
 
-In the URL box, enter ```http://prometheus:25146```. Click Save & test.
+In the URL box, enter ```http://prometheus:25146```. Click Save & test. If this doesn't work, try with localhost or the name of the server.
 
-Prometheus is now available as a data source in Grafana. Let's now add a query for a metric. In the sidebar, click the Explore (compass) icon. In the Query editor, click the ```Code``` tag to directly input the PromQL query. In the ```Enter a PromQL query``` field, enter ```go_memstats_alloc_bytes``` and then press Shift + Enter. A graph appears. We are ploting the Number of bytes allocated and still in use in our system. 
+Prometheus is now available as a data source in Grafana. Let's now add a query for a metric. In the sidebar, click the Explore (compass) icon, and click on Metrics. You can see the metrics that are available. You can now click directly on Explore to go into the Query editor. There, click the ```Code``` tag to directly input the PromQL query. In the ```Enter a PromQL query``` field, enter ```scrape_duration_seconds``` and then press Shift + Enter. A graph appears.
 
 In the top right corner, click the dropdown arrow on the Run Query button, and then select 5s. Grafana runs your query and updates the graph every 5 seconds.
 
