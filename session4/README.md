@@ -52,8 +52,6 @@ First, we need to understand how Compose files work. It’s actually simpler tha
 The basic structure of a Docker Compose YAML file looks like this:
 
 ```
-version: 'X'
-
 services:
   web:
     build: .
@@ -123,7 +121,7 @@ services:
 - `image`: If we don’t have a Dockerfile and want to run a service using a pre-built image, we specify the image location using the image clause. Compose will fork a container from that image.
 - `environment`: The clause allows us to set up an environment variable in the container. This is the same as the -e argument in Docker when running a container.
 
-To deploy the services:
+To deploy the services (this will likely give an error as we don't have specified the necessary Dockerfiles yet):
 
 ```
 docker compose up -d
@@ -251,34 +249,34 @@ cd composetest
 
 Create a file called app.py in your project directory and paste this in:
 ```
-    import time
+import time
 
-    import redis
-    from flask import Flask
+import redis
+from flask import Flask
 
-    app = Flask(__name__)
-    cache = redis.Redis(host='redis', port=6379)
+app = Flask(__name__)
+cache = redis.Redis(host='redis', port=6379)
 
-    def get_hit_count():
-        retries = 5
-        while True:
-            try:
-                return cache.incr('hits')
-            except redis.exceptions.ConnectionError as exc:
-                if retries == 0:
-                    raise exc
-                retries -= 1
-                time.sleep(0.5)
+def get_hit_count():
+    retries = 5
+    while True:
+        try:
+            return cache.incr('hits')
+        except redis.exceptions.ConnectionError as exc:
+            if retries == 0:
+                raise exc
+            retries -= 1
+            time.sleep(0.5)
 
-    @app.route('/')
-    def hello():
-        count = get_hit_count()
-        return 'Hello World! I have been seen {} times.\n'.format(count)
+@app.route('/')
+def hello():
+    count = get_hit_count()
+    return 'Hello World! I have been seen {} times.\n'.format(count)
 ```
 
-In this example, redis is the hostname of the redis container on the application’s network. We use the default port for Redis, 6379.
+In this example, redis is the hostname of the redis container on the application’s network. We use the port 6379 that is the default port for Redis. This port is internal to the docker compose network and therewith can be used without fear that other people on the server will use the same port.
 
-**Handling transient errors**. Note the way the get_hit_count function is written. This basic retry loop lets us attempt our request multiple times if the redis service is not available. This is useful at startup while the application comes online, but also makes our application more resilient if the Redis service needs to be restarted anytime during the app’s lifetime. In a cluster, this also helps handling momentary connection drops between nodes.
+**Handling transient errors**. Note the way the ```get_hit_count``` function is written. This basic retry loop lets us attempt our request multiple times if the redis service is not available. This is useful at startup while the application comes online, but also makes our application more resilient if the Redis service needs to be restarted anytime during the app’s lifetime. In a cluster, this also helps handling momentary connection drops between nodes.
 
 Create another file called requirements.txt in your project directory and paste this in:
 
@@ -326,12 +324,11 @@ For more information on how to write Dockerfiles, see the Docker user guide and 
 Create a file called `docker-compose.yml` in your project directory and paste the following:
 
 ```
-version: "3.9"
 services:
   web:
     build: .
     ports:
-      - "8000:5000"
+      - "25144:5000"
   redis:
     image: "redis:alpine"
 ```
@@ -340,7 +337,7 @@ This Compose file defines two services: web and redis.
 
 *Web service*
 
-The web service uses an image that’s built from the Dockerfile in the current directory. It then binds the container and the host machine to the exposed port, 8000. This example service uses the default port for the Flask web server, 5000.
+The web service uses an image that’s built from the Dockerfile in the current directory. It then binds the container and the host machine to the exposed port, 25144. **On the server, you need to change this port (25144) to a port that you have been assigned** This example service uses the default port for the Flask web server, 5000.
 
 *Redis service*
 
@@ -356,9 +353,9 @@ From your project directory, start up your application by running docker compose
 
 Compose pulls a Redis image, builds an image for your code, and starts the services you defined. In this case, the code is statically copied into the image at build time.
 
-Enter http://localhost:8000/ in a browser to see the application running.
+Enter http://localhost:25144/ in a browser to see the application running.
 
-If you’re using Docker natively on Linux, Docker Desktop for Mac, or Docker Desktop for Windows, then the web app should now be listening on port 8000 on your Docker daemon host. Point your web browser to http://localhost:8000 to find the Hello World message. If this doesn’t resolve, you can also try http://127.0.0.1:8000.
+If you’re using Docker natively on Linux, Docker Desktop for Mac, or Docker Desktop for Windows, then the web app should now be listening on port 25144 on your Docker daemon host. Point your web browser to http://localhost:25144 to find the Hello World message. If this doesn’t resolve, you can also try http://127.0.0.1:25144.
 
 You should see a message in your browser saying:
 
@@ -412,12 +409,11 @@ Stop the application by hitting CTRL+C in the original terminal where you starte
 Edit docker-compose.yml in your project directory to add a bind mount for the web service:
 
 ```
-version: "3.9"
 services:
   web:
     build: .
     ports:
-      - "8000:5000"
+      - "25144:5000"
     volumes:
       - .:/code
     environment:
@@ -495,8 +491,6 @@ First, we are going to deploy a NodeExporter Service. NodeExporter exposes a wid
 Create a `docker-compose.yml` file
 
 ```
-version: '3'
-
 services:
   node-exporter:
     container_name: node1-exporter
@@ -595,8 +589,6 @@ volumes:
 
 This is how the final ```docker-compose.yml``` file looks like: 
 ```
-version: '3'
-
 services:
 
   node-exporter:
