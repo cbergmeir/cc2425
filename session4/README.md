@@ -676,11 +676,11 @@ You just made your first PromQL query! PromQL is a powerful query language that 
 
 # Singularity Compose
 
-Singularity was conceived as a more secure option to run encapsulated environments. Unlike Docker, Singularity containers allows user to interact with processes in the foreground (e.g. running a script and exiting) and were not appropriate to run background services. This was a task for **container instances** (Singularity argot). A container instance equates to running a container in a detached or daemon mode. Instances allow for running persistent services in the background and then interaction with theses services from the host and other containers. To orchestrate and customize several of these Singularity instances, Singularity Compose came up (https://www.theoj.org/joss-papers/joss.01578/10.21105.joss.01578.pdf).
+Singularity was conceived as a more secure option to run encapsulated environments. Unlike Docker, Singularity containers allows users to interact with processes in the foreground (e.g. running a script and exiting) and were not appropriate to run background services. This was a task for **container instances** (Singularity argot). A container instance equates to running a container in a detached or daemon mode. Instances allow for running persistent services in the background and then interaction with theses services from the host and other containers. To orchestrate and customize several of these Singularity instances, Singularity Compose came up (https://www.theoj.org/joss-papers/joss.01578/10.21105.joss.01578.pdf).
 
 Singularity compose is intended to run a small number of container instances on your host. It is not a complicated orchestration tool like Kubernetes, but rather a controlled way to represent and manage a set of container instances, or services.
 
-## Installation
+## Installation (not needed on the server)
 
 
 Dependencies
