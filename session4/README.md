@@ -1,5 +1,5 @@
 
-<h1>Sesion 4: Containers orchestrators - Docker compose, Singularity compose and Kubernetes</h1>
+<h1>Sesion 4: Container orchestrators - Docker compose, Singularity compose and Kubernetes</h1>
   
   * [Intro to container orchestrators](#Intro-to-containers-orchestrators)
   * [Docker Compose](#Docker-Compose)
@@ -9,11 +9,11 @@
   * [Kubernetes](#Kubernetes)
 
 
-# Intro to containers orchestrators
+# Intro to container orchestrators
 
 Although you can certainly manage research workflows that use multiple containers manually, there are a number of container orchestration tools that you may find useful when managing workflows that use multiple containers. Also running containers in production is tough: what happens **if the containers die**? How do you **scale** across several machines? **Container orchestration** solves these problems. 
 
-The general idea behind containers orchestrators is that you have “managers” who receive expected state. This state might be “I want to run two instances of my web app and expose port 80.” The managers then look at all of the machines in the cluster and delegate work to “worker” nodes. The managers watch for changes (such as a container quitting) and then work to make actual state reflect the expected state.
+The general idea behind container orchestrators is that you have “managers” who receive an expected state. This state might be “I want to run two instances of my web app and expose port 80.” The managers then look at all of the machines in the cluster and delegate work to “worker” nodes. The managers watch for changes (such as a container quitting) and then work to make actual state reflect the expected state.
 
 In this lesson we briefly describe a few options and point to useful resources on using these tools to allow you to explore them yourself.
 
@@ -23,7 +23,7 @@ Docker Compose provides a way of constructing a unified workflow (or service) ma
 
 **Kubernetes**
 
-Kubernetes is an open source framework that provides similar functionality to Docker Compose. Its particular strengths are that is platform independent and can be used with many different container technologies and that it is widely available on cloud platforms so once you have implemented your workflow in Kubernetes it can be deployed in different locations as required. It has become the de facto standard for container orchestration.
+Kubernetes is an open source framework that provides similar functionality to Docker Compose. Its particular strengths are that it is platform independent and can be used with many different container technologies and that it is widely available on cloud platforms so once you have implemented your workflow in Kubernetes it can be deployed in different locations as required. It has become the de facto standard for container orchestration.
 
 **Singularity Compose**
 
@@ -39,7 +39,7 @@ Let's go into more detail for some of the most popular container orchestration t
 
 Docker Compose is a Docker tool used to define and run multi-container applications. With Compose, you use a YAML file to configure your application’s services and create all the app’s services from that configuration.
 
-Think of docker-compose as an automated multi-container workflow. Compose is an excellent tool for development, testing, CI workflows, and staging environments. According to the Docker documentation, the most popular features of Docker Compose are:
+Think of Docker Compose as an automated multi-container workflow. Compose is an excellent tool for development, testing, CI workflows, and staging environments. According to the Docker documentation, the most popular features of Docker Compose are:
 
 - Multiple isolated environments on a single host
 - Preserve volume data when containers are created
@@ -47,7 +47,7 @@ Think of docker-compose as an automated multi-container workflow. Compose is an 
 - Variables and moving a composition between environments
 - Orchestrate multiple containers that work together
 
-First, we need to understand how Compose files work. It’s actually simpler than it seems. In short, Docker Compose files work by applying mutiple commands that are declared within a single docker-compose.yml configuration file.
+First, we need to understand how Compose files work. It’s actually simpler than it seems. In short, Docker Compose files work by applying mutiple commands that are declared within a single ```docker-compose.yml``` configuration file.
 
 The basic structure of a Docker Compose YAML file looks like this:
 
@@ -65,13 +65,12 @@ services:
     image: redis
 ```
 
-Now, let’s look at real-world example of a Docker Compose file and break it down step-by-step to understand all of this better. Note that all the clauses and keywords in this example are commonly used keywords and industry standard.
+Now, let’s look at a real-world example of a Docker Compose file and break it down step-by-step to understand all of this better. Note that all the clauses and keywords in this example are commonly used keywords and industry standard.
 
 
 With just these, you can start a development workflow. There are some more advanced keywords that you can use in production, but for now, let’s just get started with the necessary clauses.
 
 ```
-version: '3'
 services:
   web:
     # Path to dockerfile.
@@ -99,7 +98,7 @@ services:
 
     # Environment variables for startup script
     # container will use these variables
-    # to start the container with these define variables. 
+    # to start the container with these defined variables. 
     environment:
       - "MYSQL_ROOT_PASSWORD=root"
       - "MYSQL_USER=testuser"
@@ -108,14 +107,13 @@ services:
     # Mount init.sql file to automatically run 
     # and create tables for us.
     # everything in docker-entrypoint-initdb.d folder
-    # is executed as soon as container is up nd running.
+    # is executed as soon as container is up and running.
     volumes:
       - "/usercode/db/init.sql:/docker-entrypoint-initdb.d/init.sql"
     
 ```
 
 
-- `version ‘3’`: This denotes that we are using version 3 of Docker Compose, and Docker will provide the appropriate features. At the time of writing this article, version 3.7 is latest version of Compose.
 - `services`: This section defines all the different containers we will create. In our example, we have two services, web and database.
 - `web`: This is the name of our Flask app service. Docker Compose will create containers with the name we provide.
 - `build`: This specifies the location of our Dockerfile, and . represents the directory where the docker-compose.yml file is located.
@@ -128,32 +126,32 @@ services:
 To deploy the services:
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 To un-deploy the services:
 
 ```
-docker-compose down
+docker compose down
 ```
 
 Docker Compose commands
 
 Now that we know how to create a docker-compose file, let’s go over the most common Docker Compose commands that we can use with our files. Keep in mind that we will only be discussing the most frequently-used commands.
 
-`docker-compose`: Every Compose command starts with this command. You can also use docker-compose <command> --help to provide additional information about arguments and implementation details.
+`docker compose`: Every Compose command starts with this command. You can also use docker compose <command> --help to provide additional information about arguments and implementation details.
 
 
 ```
-$ docker-compose --help
+$ docker compose --help
 Define and run multi-container applications with Docker.
 ```
 
 
-`docker-compose build`: This command builds images in the docker-compose.yml file. The job of the build command is to get the images ready to create containers, so if a service is using the prebuilt image, it will skip this service.
+`docker compose build`: This command builds images in the docker-compose.yml file. The job of the build command is to get the images ready to create containers, so if a service is using the prebuilt image, it will skip this service.
 
 ```
-$ docker-compose build
+$ docker compose build
 database uses an image, skipping
 Building web
 Step 1/11 : FROM python:3.9-rc-buster
@@ -161,10 +159,10 @@ Step 1/11 : FROM python:3.9-rc-buster
 Step 2/11 : RUN apt-get update && apt-get install -y docker.io
 ```
 
-`docker-compose images`: This command will list the images you’ve built using the current docker-compose file.
+`docker compose images`: This command will list the images you’ve built using the current docker-compose file.
 
 ```
-$ docker-compose images
+$ docker compose images
           Container                  Repository        Tag       Image Id       Size  
 --------------------------------------------------------------------------------------
 7001788f31a9_docker_database_1   mysql/mysql-server   5.7      2a6c84ecfcb2   333.9 MB
@@ -172,18 +170,18 @@ docker_database_1                mysql/mysql-server   5.7      2a6c84ecfcb2   33
 docker_web_1                     <none>               <none>   d986d824dae4   953 MB
 ```
 
-`docker-compose stop`: This command stops the running containers of specified services.
+`docker compose stop`: This command stops the running containers of specified services.
 
 ```
-$ docker-compose stop
+$ docker compose stop
 Stopping docker_web_1      ... done
 Stopping docker_database_1 ... done
 ```
 
-`docker-compose run`: This is similar to the docker run command. It will create containers from images built for the services mentioned in the compose file.
+`docker compose run`: This is similar to the docker run command. It will create containers from images built for the services mentioned in the compose file.
 
 ```
-$ docker-compose run web
+$ docker compose run web
 Starting 7001788f31a9_docker_database_1 ... done
  * Serving Flask app "app.py" (lazy loading)
  * Environment: development
@@ -194,42 +192,42 @@ Starting 7001788f31a9_docker_database_1 ... done
  * Debugger PIN: 116-917-688
 ```
 
-`docker-compose up`: This command does the work of the docker-compose build and docker-compose run commands. It builds the images if they are not located locally and starts the containers. If images are already built, it will fork the container directly.
+`docker compose up`: This command does the work of the docker compose build and docker compose run commands. It builds the images if they are not located locally and starts the containers. If images are already built, it will fork the container directly.
 
 ```
-$ docker-compose up
+$ docker compose up
 Creating docker_database_1 ... done
 Creating docker_web_1      ... done
 Attaching to docker_database_1, docker_web_1
 ```
 
-`docker-compose ps`: This command list all the containers in the current docker-compose file. They can then either be running or stopped.
+`docker compose ps`: This command list all the containers in the current docker-compose file. They can then either be running or stopped.
 
 ```
-$ docker-compose ps
+$ docker compose ps
       Name                 Command             State               Ports         
 ---------------------------------------------------------------------------------
 docker_database_1   /entrypoint.sh mysqld   Up (healthy)   3306/tcp, 33060/tcp   
 docker_web_1        flask run               Up             0.0.0.0:5000->5000/tcp
  
-$ docker-compose ps
+$ docker compose ps
       Name                 Command          State    Ports
 ----------------------------------------------------------
 docker_database_1   /entrypoint.sh mysqld   Exit 0        
 docker_web_1        flask run               Exit 0    
 ```
 
-`docker-compose down`: This command is similar to the docker system prune command. However, in Compose, it stops all the services and cleans up the containers, networks, and images.
+`docker compose down`: This command is similar to the docker system prune command. However, in Compose, it stops all the services and cleans up the containers, networks, and images.
 
 ```
-$ docker-compose down
+$ docker compose down
 Removing docker_web_1      ... done
 Removing docker_database_1 ... done
 Removing network docker_default
-(django-tuts) Venkateshs-MacBook-Air:Docker venkateshachintalwar$ docker-compose images
+(django-tuts) Venkateshs-MacBook-Air:Docker venkateshachintalwar$ docker compose images
 Container   Repository   Tag   Image Id   Size
 ----------------------------------------------
-(django-tuts) Venkateshs-MacBook-Air:Docker venkateshachintalwar$ docker-compose ps
+(django-tuts) Venkateshs-MacBook-Air:Docker venkateshachintalwar$ docker compose ps
 Name   Command   State   Ports
 ------------------------------
 ```
@@ -350,10 +348,10 @@ The redis service uses a public Redis image pulled from the Docker Hub registry.
 
 ## Step 4: Build and run your app with Compose
 
-From your project directory, start up your application by running docker-compose up.
+From your project directory, start up your application by running docker compose up.
 
  ```
- docker-compose up
+ docker compose up
  ```
 
 Compose pulls a Redis image, builds an image for your code, and starts the services you defined. In this case, the code is statically copied into the image at build time.
@@ -407,7 +405,7 @@ Proto RefCnt Flags       Type       State         I-Node Path
 
 ```
 
-Stop the application by hitting CTRL+C in the original terminal where you started the app and then remove the containers by running ```docker-compose down```. 
+Stop the application by hitting CTRL+C in the original terminal where you started the app and then remove the containers by running ```docker compose down```. 
 
 ## Step 5: Edit the Compose file to add a bind mount
 
@@ -432,9 +430,9 @@ The new ```volumes``` key mounts the project directory (current directory) on th
 
 ## Step 6: Re-build and run the app with Compose
 
-From your project directory, type docker-compose up to build the app with the updated Compose file, and run it.
+From your project directory, type docker compose up to build the app with the updated Compose file, and run it.
 
-``docker-compose up`` 
+``docker compose up`` 
 
 Check the Hello World message in a web browser again, and refresh to see the count increment.
 
@@ -455,28 +453,28 @@ Refresh the app in your browser. The greeting should be updated, and the counter
 
 ## Step 8: Experiment with some other commands
 
-If you want to run your services in the background, you can pass the -d flag (for “detached” mode) to ```docker-compose up``` and use ```docker-compose ps``` to see what is currently running:
+If you want to run your services in the background, you can pass the -d flag (for “detached” mode) to ```docker compose up``` and use ```docker compose ps``` to see what is currently running:
 
 ```
-docker-compose up -d
-docker-compose ps
+docker compose up -d
+docker compose ps
 ```
 
-The ```docker-compose run``` command allows you to run one-off commands for your services. For example, to see what environment variables are available to the web service:
+The ```docker compose run``` command allows you to run one-off commands for your services. For example, to see what environment variables are available to the web service:
 
 ```
-docker-compose run web env
+docker compose run web env
 ```
 
-See ```docker-compose --help``` to see other available commands. You can also install command completion for the bash and zsh shell, which also shows you available commands.
+See ```docker compose --help``` to see other available commands. You can also install command completion for the bash and zsh shell, which also shows you available commands.
 
-If you started Compose with ```docker-compose up -d```, stop your services once you’ve finished with them:
+If you started Compose with ```docker compose up -d```, stop your services once you’ve finished with them:
 
-```docker-compose stop```
+```docker compose stop```
 
 You can bring everything down, removing the containers entirely, with the down command. Pass --volumes to also remove the data volume used by the Redis container:
 
-```docker-compose down --volumes```
+```docker compose down --volumes```
 
 
 # Docker compose Use Case #2: Monitoring system with Prometheus + NodeExporter
@@ -510,7 +508,7 @@ services:
 Then, run:
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 And open in your browser http://localhost:9100 to check that the service is running. 
@@ -538,7 +536,7 @@ curl http://localhost:9100/metrics | grep "node_"
 Then type:
 
 ```
-docker-compose down
+docker compose down
 ```
 
 ## Prometheus
@@ -625,7 +623,7 @@ volumes:
 Then type the following:
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 And open in your browser 2 tabs:
@@ -639,7 +637,7 @@ Check if all the services are running.
 
 Now we are going to drop this service to add [Grafana](https://grafana.com) as a Prometheus stats visualizer. 
 ```
-docker-compose down
+docker compose down
 ```
 
 Add to the ```docker-compose.yml``` the following code for ```grafana``` at the services level:
@@ -655,7 +653,7 @@ Add to the ```docker-compose.yml``` the following code for ```grafana``` at the 
 Then, run again:
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 And open in your browser 3 tabs:
@@ -738,7 +736,7 @@ instances:
       - 80:80
 ```
 
-If you are familiar with docker-compose the file should look very familiar. A key difference is that instead of **"services"** we have **"instances."** And you guessed correctly - each section there corresponds to a Singularity instance that will be created. In this guide, we will walk through each of the sections in detail.
+If you are familiar with Docker Compose the file should look very familiar. A key difference is that instead of **"services"** we have **"instances."** And you guessed correctly - each section there corresponds to a Singularity instance that will be created. In this guide, we will walk through each of the sections in detail.
 Instance folders
 
 Generally, each section in the yaml file corresponds with a container instance to be run, and each container instance is matched to a folder in the present working directory. For example, if I give instruction to build an nginx instance from a nginx/Singularity.nginx file, I should have the following in my singularity-compose:
