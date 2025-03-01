@@ -337,7 +337,7 @@ This Compose file defines two services: web and redis.
 
 *Web service*
 
-The web service uses an image that’s built from the Dockerfile in the current directory. It then binds the container and the host machine to the exposed port, 25144. **On the server, you need to change this port (25144) to a port that you have been assigned** This example service uses the default port for the Flask web server, 5000.
+The web service uses an image that’s built from the Dockerfile in the current directory. It uses the default port for the Flask web server, 5000, internally in teh docker compose network. It then binds the container and the host machine to the exposed port, 25144. **On the server, you need to change this port (25144) to a port that you have been assigned.** 
 
 *Redis service*
 
@@ -477,6 +477,8 @@ You can bring everything down, removing the containers entirely, with the down c
 
 We are going to deploy a Basic monitoring version that allows to serve [Prometheus](https://prometheus.io) + [NodeExporter](https://prometheus.io/docs/guides/node-exporter/).
 
+**Again, on the server, you need to change the port used here (25145, 25146, 25147) to ports that you have been assigned.**
+
 Create a project/folder:
 
 ```
@@ -496,7 +498,7 @@ services:
     container_name: node1-exporter
     image: prom/node-exporter
     ports:
-      - 9100:9100
+      - 25145:9100
 ```
 
 Then, run:
@@ -505,12 +507,12 @@ Then, run:
 docker compose up -d
 ```
 
-And open in your browser http://localhost:9100 to check that the service is running. 
+And open in your browser http://localhost:25145 to check that the service is running. 
 
-Once the Node Exporter is running, you can verify that metrics are being exported by going to [http://localhost:9100/metrics](http://localhost:9100/metrics) or by cURLing the ```/metrics``` endpoint:
+Once the Node Exporter is running, you can verify that metrics are being exported by going to [http://localhost:25145/metrics](http://localhost:25145/metrics) or by cURLing the ```/metrics``` endpoint:
 
 ```
-curl http://localhost:9100/metrics
+curl http://localhost:25145/metrics
 ```
 You should see output like this:
 ```
@@ -524,7 +526,7 @@ go_gc_duration_seconds{quantile="0.5"} 5.846e-05
 
 Success! The Node Exporter is now exposing metrics that Prometheus can scrape, including a wide variety of system metrics further down in the output (prefixed with node_). To view those metrics (along with help and type information):
 ```
-curl http://localhost:9100/metrics | grep "node_"
+curl http://localhost:25145/metrics | grep "node_"
 ```
 
 Then type:
@@ -552,7 +554,7 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets:
-          - 'prometheus:9090'
+          - 'prometheus:25146'
           - 'idonotexists:564'
 
 ```
@@ -575,7 +577,7 @@ Finally, add to the ```docker-compose.yml``` the following code for ```prometheu
     container_name: node-prom
     image: prom/prometheus:v2.30.3
     ports:
-      - 9090:9090
+      - 25146:9090
     volumes:
       - .:/etc/prometheus
       - prometheus-data:/prometheus
@@ -595,13 +597,13 @@ services:
     container_name: node1-exporter
     image: prom/node-exporter
     ports:
-      - 9100:9100      
+      - 25145:9100      
 
   prometheus:
     container_name: node-prom
     image: prom/prometheus:v2.30.3
     ports:
-      - 9090:9090
+      - 25146:9090
     volumes:
       - .:/etc/prometheus
       - prometheus-data:/prometheus
@@ -619,8 +621,8 @@ docker compose up -d
 ```
 
 And open in your browser 2 tabs:
-- http://localhost:9090 For Prometheus server
-- http://localhost:9100 For Node Exporter
+- http://localhost:25146 For Prometheus server
+- http://localhost:25145 For Node Exporter
 
 Check if all the services are running.
 
@@ -639,7 +641,7 @@ Add to the ```docker-compose.yml``` the following code for ```grafana``` at the 
     container_name: node-grafana
     image: grafana/grafana-oss
     ports:
-      - 3000:3000
+      - 25147:3000
 ```
 
 Then, run again:
@@ -649,9 +651,9 @@ docker compose up -d
 ```
 
 And open in your browser 3 tabs:
-- http://localhost:9090 For Prometheus server
-- http://localhost:9100 For Node Exporter
-- http://localhost:3000 For Grafana
+- http://localhost:25146 For Prometheus server
+- http://localhost:25145 For Node Exporter
+- http://localhost:25147 For Grafana
 
 Check if all the services are running.
 
@@ -663,7 +665,7 @@ Browse to http://localhost:3000 and log in to Grafana (username: admin, password
 
 To be able to visualize the metrics from Prometheus, you first need to add it as a data source in Grafana. In the sidebar, hover your cursor over the Configuration (gear) icon, and then click Data sources. Click Add data source. In the list of data sources, click Prometheus.
 
-In the URL box, enter ```http://prometheus:9090```. Click Save & test.
+In the URL box, enter ```http://prometheus:25146```. Click Save & test.
 
 Prometheus is now available as a data source in Grafana. Let's now add a query for a metric. In the sidebar, click the Explore (compass) icon. In the Query editor, click the ```Code``` tag to directly input the PromQL query. In the ```Enter a PromQL query``` field, enter ```go_memstats_alloc_bytes``` and then press Shift + Enter. A graph appears. We are ploting the Number of bytes allocated and still in use in our system. 
 
