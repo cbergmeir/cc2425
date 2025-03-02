@@ -997,7 +997,7 @@ Download kubectl and install to the directory:
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 
 install kubectl ~/.local/bin/kubectl && rm kubectl
- 
+```
 
 ### Basic commands
 Start your cluster ```minikube start```, to use it with docker, or use the following with podman. **Podman may currently not work on the server.**
@@ -1242,7 +1242,7 @@ $ minikube ip
 
 192.168.99.100
 ```
-Now, open the browser and access the application on 192.168.99.100 at port 31074 to check the ```Welcome to nginx!``` message. If you see the message you have successfully completed the configuration of an nginx web service with 3 replicas. 
+Now, open the browser and access the application on 192.168.99.100 at port 31074 to check the ```Welcome to nginx!``` message. If you see the message you have successfully completed the configuration of an nginx web service with 3 replicas. If you are on a server, you can use ```lynx``` which is a command-line browser, or if that is not available, you can use wget, e.g., with ```wget http://192.168.99.100:31074``` to check.
 
 ### What if one of your replicas fails?
 
