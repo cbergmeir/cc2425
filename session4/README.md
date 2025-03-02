@@ -731,9 +731,10 @@ instances:
 ```
 
 If you are familiar with Docker Compose the file should look very familiar. A key difference is that instead of **"services"** we have **"instances."** And you guessed correctly - each section there corresponds to a Singularity instance that will be created. In this guide, we will walk through each of the sections in detail.
-Instance folders
 
-Generally, each section in the yaml file corresponds with a container instance to be run, and each container instance is matched to a folder in the present working directory. For example, if I give instruction to build an nginx instance from a nginx/Singularity.nginx file, I should have the following in my singularity-compose:
+### Instance folders
+
+Generally, each section in the yaml file corresponds with a container instance to be run, and each container instance is matched to a folder in the present working directory. For example, if I give instruction to build an nginx instance from an nginx/Singularity.nginx file, I should have the following in my singularity-compose:
 
 ```
   nginx:
@@ -757,7 +758,7 @@ Notice how I also have other dependency files for the nginx container in that fo
     image: docker://nginx
 ```
 
-This will pull a container nginx.sif into a nginx context folder:
+This will pull a container nginx.sif into an nginx context folder:
 ```
 ├── nginx                    (- created if it doesn't exist
 │   └── nginx.sif            (- named according to the instance
@@ -812,7 +813,7 @@ instances:
 ...
 ```
 
-It defines a single service, app, which has both a Django application and a nginx server with the nginx-upload module enabled. It tells us right away that the folder app is the context folder, and inside we can see dependency files for nginx and django.
+It defines a single service, app, which has both a Django application and an nginx server with the nginx-upload module enabled. It tells us right away that the folder app is the context folder, and inside we can see dependency files for nginx and django.
 
 ```
 $ ls app/
@@ -968,10 +969,45 @@ Minikube is one of the easiest, most flexible and popular methods to run an all-
 For Minikube installation and getting started with this tool, we are going to follow the official [Get Started with Minikube tutorial](https://minikube.sigs.k8s.io/docs/start/) with more steps and info from the [LinuxFoundationX LFS158x EdX Course on Introduction to Kubernetes](https://learning.edx.org/course/course-v1:LinuxFoundationX+LFS158x+1T2022/)
 
 ### Installation 
+
 Choose your OS and Arquitecture and Install Minikube: [(https://minikube.sigs.k8s.io/docs/start/)](https://minikube.sigs.k8s.io/docs/start/#what-youll-need)
 
+In particular, on a server where you don't have root access, you can follow these steps:
+
+make a local folder for binaries if it doesn't exist already, and add it to the path:
+
+```
+mkdir ~/.local/bin 
+
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Download minikube and install to the directory:
+
+```
+curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
+
+install minikube-linux-amd64 ~/.local/bin/minikube && rm minikube-linux-amd64
+```
+
+Download kubectl and install to the directory:
+
+```
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+install kubectl ~/.local/bin/kubectl && rm kubectl
+ 
+
 ### Basic commands
-Start your cluster ```minikube start```
+Start your cluster ```minikube start```, to use it with docker, or use the following with podman. **Podman may currently not work on the server.**
+
+```
+minikube config set rootless true
+minikube start --driver=podman
+```
+
+
 ```
 $ minikube start
 😄  minikube v1.29.0 en Darwin 12.6
@@ -1029,6 +1065,7 @@ Any healthy running Kubernetes cluster can be accessed via any one of the follow
 - **Command Line Interface (CLI) tools and scripts with ```kubectl``` -- this is the preferred method for our tutorials**
 - Web-based User Interface (Web UI) from a web browser with [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
 - APIs from CLI or programmatically
+
 These methods are applicable to all Kubernetes clusters.
 
 
@@ -1133,7 +1170,7 @@ webserver-774f96d4d9        3         3         3       81s
 
 ```
 
-As an alternative to the .yaml definition file, we could also have created the webserver application by pulling the image direct with this command: 
+As an alternative to the .yaml definition file, we could also have created the webserver application by pulling the image directly with this command: 
 ```
 $  kubectl create deployment webserver --image=nginx:alpine --replicas=3 --port=80
 ```
