@@ -15,7 +15,7 @@
 ## 1. Objetivos de la práctica
 - Crear servicios interconectados usando contenedores.
 - Conocer el despliegue de servicios en contenedores usando docker/podman, docker/podman-compose y kubernetes.
-- Se puede implementar con docker o podman, mi recomendación es usar podman
+- **Se puede implementar con docker o podman, mi recomendación es usar podman**
 - Implementar distintas arquitecturas de servicios en contenedores en función de los requisitos del sistema. 
 - Gestionar la escalabilidad de los servicios.
 - Gestionar réplicas y herramientas de monitoreo y balanceo de carga. 
@@ -31,7 +31,7 @@ El despliegue de servicios en Cloud Computing es fundamental para poner en march
 
 ownCloud es una herramienta *open-source* de sincronización y compartición de ficheros en la nube. Una especie de Google Drive o Dropbox de código abierto, con un [gran soporte entre la comunidad](https://owncloud.com/getting-started/).
 
-Puedes probar una demo de ownCloud [aquí](https://demo.owncloud.org).
+Puedes probar una demo de ownCloud [aquí](https://demo.owncloud.com).
 
 **El objetivo de esta práctica es desplegar nuestro propio servicio de ownCloud**. Con este despliegue, estaremos dando servicio a una empresa ficticia. Según el tamaño de la empresa, sus necesidades y su infraestructura, se recomendarán distintas arquitecturas cloud para el despliegue de este servicio. De este modo, **un objetivo secundario de esta práctica es conseguir desplegar este servicio con distintas arquitecturas y empleando distintas soluciones tecnológicas del Cloud**.     
 
@@ -246,7 +246,7 @@ Esto crea una estructura similar a un árbol que se utiliza para definir relacio
 
 Funciona como una ruta completa de regreso a la raíz de los árboles de información de datos, o DITs.
 
-Por ejemplo, por ejemplo:
+Por ejemplo:
 
 ```
 dn: cn=carlos,dc=example,dc=org
@@ -423,7 +423,7 @@ y comprueba si el usuario sigue existiendo. ¿Qué ocurre?
 
 **No hay persistencia de datos (los datos solo existen dentro del contenedor), así que cualquier modificación en los datos de la imagen se elimina cuando echamos abajo el servicio**. Para evitarlo, debemos montar volúmenes de datos permanentes para el directorio LDAP, de forma que cualquier cambio en los datos sea visible y persistente fuera del contenedor, incluso si el servicio se cayera o se interrumpiera. 
 
-Para ello, creamos dos carpetas para almacenar datos de LAPD: 
+Para ello, creamos dos carpetas para almacenar datos de LDAP: 
 ```
 sudo mkdir -p ./data/slapd/config
 sudo mkdir ./data/slapd/database
@@ -447,7 +447,7 @@ Ahora, montamos estas carpetas como volúmenes de datos permanentes al lanzar el
 docker run -p 389:389 -p 636:636 --volume /path-completo-hasta/data/slapd/database:/var/lib/ldap --volume /path-completo-hasta/data/slapd/config:/etc/ldap/slapd.d --name openldap-server  --detach osixia/openldap:1.5.0 
 ```
 
-Si tienes un firewall activo, debes permitir que los puertos 389 y 636 estén accesibles para que LAPD escuche las peticiones de servicio a través de ellos con el siguiente código. Si no tienes un firewall activo, omite este paso: 
+Si tienes un firewall activo, debes permitir que los puertos 389 y 636 estén accesibles para que LDAP escuche las peticiones de servicio a través de ellos con el siguiente código. Si no tienes un firewall activo, omite este paso: 
 
 ```
 ##Si usas UFW
