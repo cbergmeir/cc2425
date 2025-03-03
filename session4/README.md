@@ -230,7 +230,13 @@ Name   Command   State   Ports
 ------------------------------
 ```
 
+# Setup
 
+On the server, you need to run ```dockerd-rootless-setuptool.sh install``` for the rootless docker install to work. To use podman compose, you need to run the following:
+
+```
+systemctl --user start podman.socket
+```
 
 # Docker Compose Use Case #1: Web server with Redis + Flask
 
