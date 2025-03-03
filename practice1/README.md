@@ -16,6 +16,7 @@
 - Crear servicios interconectados usando contenedores.
 - Conocer el despliegue de servicios en contenedores usando docker/podman, docker/podman-compose y kubernetes.
 - **Se puede implementar con docker o podman, mi recomendación es usar podman**
+- **Utilizad únicamente el rango de puertos por encima del puerto 20 000 que se os haya asignado si estáis utilizando el servidor.**
 - Implementar distintas arquitecturas de servicios en contenedores en función de los requisitos del sistema. 
 - Gestionar la escalabilidad de los servicios.
 - Gestionar réplicas y herramientas de monitoreo y balanceo de carga. 
@@ -100,7 +101,7 @@ Este escenario sería el más apropiado para este tipo de requisitos:
 
 ##### Arquitectura cloud propuesta
 
-Una máquina ejecutando la aplicación: la web, el servidor de BD y almacenamiento local. Otra máquina prestando el servicio de autenticación a través de LDAP. Este diagrama representaría la arquitectura propuesta: 
+Una máquina ejecutando la aplicación: la web, el servidor de BD y almacenamiento local. Otra máquina prestando el servicio de autenticación a través de LDAP. Como no tenemos disponibles más de una máquina, no hay problema en simularlo todo en la misma máquina. Este diagrama representaría la arquitectura propuesta: 
 
 ![Arquitectura propuesta para una pequeña empresa](https://doc.owncloud.com/server/next/admin_manual/_images/installation/deprecs-1.png)
 
@@ -273,9 +274,9 @@ En el [manual de OpenLDAP](https://www.openldap.org/doc/admin21/intro.html) ten�
 
 OpenLDAP es una implementación de código abierto de LDAP disponible aquí: https://www.openldap.org
 
-Puedes desplegar openLDAP desde una de las muchas imágenes de Docker disponibles: 
+Puedes desplegar openLDAP desde una de las muchas imágenes de Docker disponibles **(reemplazar el puerto 20389 con uno que se os haya asignado)**: 
 ```
-docker run -d -p 389:389 --name openldap-server -t osixia/openldap:1.5.0 
+docker run -d -p 20389:389 --name openldap-server -t osixia/openldap:1.5.0 
 ```
 
 
@@ -284,11 +285,11 @@ docker run -d -p 389:389 --name openldap-server -t osixia/openldap:1.5.0
 Para comprobar el estado del directorio LDAP, prueba: 
 
 ```
-ldapsearch -x -H ldap://localhost -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
+ldapsearch -x -H ldap://localhost:20389 -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
 ```
 o 
 ```
-docker exec openldap-server ldapsearch -x -H ldap://localhost -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
+docker exec openldap-server ldapsearch -x -H ldap://localhost:20389 -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
 
 ```
 
@@ -364,7 +365,7 @@ La opción ```-w admin```permite introducir directamente el password del adminis
 
 Para comprobar si el usuario se ha añadido con éxito, vamos a realizar la misma consulta anterior: 
 ```
-$ ldapsearch -x -H ldap://localhost -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
+$ ldapsearch -x -H ldap://localhost:20389 -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
 
 # extended LDIF
 #
@@ -411,12 +412,12 @@ docker rm -f <id contenedor>
 
 Y vuelve a lanzarlo con 
 ```
-docker run -d -p 389:389 --name openldap-server -t osixia/openldap:1.5.0 
+docker run -d -p 20389:389 --name openldap-server -t osixia/openldap:1.5.0 
 ```
 
 Lanza de nuevo la consulta: 
 ```
-$ ldapsearch -x -H ldap://localhost -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
+$ ldapsearch -x -H ldap://localhost:20389 -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
 ````
 
 y comprueba si el usuario sigue existiendo. ¿Qué ocurre? 
@@ -441,21 +442,21 @@ En MacOS:
 sudo chmod -R 775 /path-que-quieras/data/slapd
 sudo chown -R $USER /path-que-quieras/data/slapd
 ```
-Ahora, montamos estas carpetas como volúmenes de datos permanentes al lanzar el contenedor: 
+Ahora, montamos estas carpetas como volúmenes de datos permanentes al lanzar el contenedor **(reemplazar los puertos con unos que se os haya asignado)**: 
 
 ```
-docker run -p 389:389 -p 636:636 --volume /path-completo-hasta/data/slapd/database:/var/lib/ldap --volume /path-completo-hasta/data/slapd/config:/etc/ldap/slapd.d --name openldap-server  --detach osixia/openldap:1.5.0 
+docker run -p 20389:389 -p 20636:636 --volume /path-completo-hasta/data/slapd/database:/var/lib/ldap --volume /path-completo-hasta/data/slapd/config:/etc/ldap/slapd.d --name openldap-server  --detach osixia/openldap:1.5.0 
 ```
 
-Si tienes un firewall activo, debes permitir que los puertos 389 y 636 estén accesibles para que LDAP escuche las peticiones de servicio a través de ellos con el siguiente código. Si no tienes un firewall activo, omite este paso: 
+Si tienes un firewall activo, debes permitir que los puertos 20389 y 20636 estén accesibles para que LDAP escuche las peticiones de servicio a través de ellos con el siguiente código. Si no tienes un firewall activo, omite este paso: 
 
 ```
 ##Si usas UFW
-sudo ufw allow 389/tcp
-sudo ufw allow 636/tcp
+sudo ufw allow 20389/tcp
+sudo ufw allow 20636/tcp
 ##Si usas Firewalld
-sudo firewall-cmd --add-port=389/tcp --permanent
-sudo firewall-cmd --add-port=636/tcp --permanent
+sudo firewall-cmd --add-port=20389/tcp --permanent
+sudo firewall-cmd --add-port=20636/tcp --permanent
 sudo firewall-cmd --reload
 ```
 
@@ -466,11 +467,11 @@ ldapadd -x -w admin -D "cn=admin,dc=example,dc=org" -f carlos.ldif
 ```
 Compruebo que los usuarios se han creado bien: 
 ```
-docker exec openldap-server ldapsearch -x -H ldap://localhost -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
+docker exec openldap-server ldapsearch -x -H ldap://localhost:20389 -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
 ```
 echo abajo el servicio openldap con docker rm -f <containerID>, lo vuelvo a levantar y compruebo con la consulta que los usuarios siguen existiendo:
 ```
-docker exec openldap-server ldapsearch -x -H ldap://localhost -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
+docker exec openldap-server ldapsearch -x -H ldap://localhost:20389 -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
 ```
 Ahora sí, los datos persisten más allá del ámbito del contenedor. 
 
@@ -486,7 +487,7 @@ Revisa: https://www.centos.org/docs/5/html/CDS/cli/8.0/Configuration_Command_Fil
 Ahora prueba:
 
 ```
-ldapsearch -x -H ldap://localhost -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
+ldapsearch -x -H ldap://localhost:20389 -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
 ```
 
 Esto devolverá el directorio con el último usuario modificado.
@@ -563,7 +564,7 @@ Ahora, comprueba los cambios:
 
 
 ```
-ldapsearch -H ldap://localhost -LL -b ou=Users,dc=example,dc=org -x
+ldapsearch -H ldap://localhost:20389 -LL -b ou=Users,dc=example,dc=org -x
 ```
 
 Y finalmente borra la descripción. Crea un nuevo dichero i.e. ``carlos_del_descr.ldif``
@@ -583,7 +584,7 @@ ldapmodify -x -D "cn=admin,dc=example,dc=org" -w password -H ldap:// -f carlos_d
 Comprueba:
 
 ```
-ldapsearch -H ldap://localhost -LL -b ou=Users,dc=example,dc=org -x
+ldapsearch -H ldap://localhost:20389 -LL -b ou=Users,dc=example,dc=org -x
 ```
 
 Verifica si la entidad ya no está.
@@ -613,7 +614,7 @@ Ahora tienes una nueva categoría "People" dentro del árbol asociado al directo
 Por ejemplo, si queremos encontrar todos los objetos almacenados bajo la categoría ``ou=People``
 
 ```
-ldapsearch -H ldap://localhost -LL -b ou=People,dc=example,dc=org -x
+ldapsearch -H ldap://localhost:20389 -LL -b ou=People,dc=example,dc=org -x
 ```
 
 Cualquier combinación de  ```ou```, ```dc```, ... está permitida para buscar dentro del DIT.
@@ -626,9 +627,11 @@ El despliegue de un servicio ownCloud requiere desplegar un frontend con la apli
 
 ### Despliegue de contenedor ownCloud
 
+**(reemplazar el puerto 20080 con uno que se os haya asignado)**
+
 ```
 docker pull owncloud
-docker run -d -p 80:80 owncloud:latest
+docker run -d -p 20080:80 owncloud:latest
 ```
 
 ### Despliegue de contenedor MariaDB
@@ -676,7 +679,7 @@ backend testing
     server  m3  ip_maquinaM3:80 maxconn 32
 ````
 
-en el que definimos un front-end ```http-in``` y un backend ```testing```. Este balanceador espera conexiones entrantes por el puerto 80 desde cualquier IP para redirigirlas a tres máquinas servidoras que escuchan por el puerto 80. La forma de reparto de carga de trabajo por defecto es ```roundrobin```, pero puedes cambiar el algoritmo en la [configuración de HAProxy](https://www.digitalocean.com/community/tutorials/an-introduction-to-haproxy-and-load-balancing-concepts). 
+en el que definimos un front-end ```http-in``` y un backend ```testing```. Este balanceador espera conexiones entrantes por el puerto 80 desde cualquier IP para redirigirlas a tres máquinas servidoras que escuchan por el puerto 80. La forma de reparto de carga de trabajo por defecto es ```roundrobin```, pero puedes cambiar el algoritmo en la [configuración de HAProxy](https://www.digitalocean.com/community/tutorials/an-introduction-to-haproxy-and-load-balancing-concepts). **(reemplazar los puertos con unos que se os haya asignado)**
 
 Siguiendo el ejemplo anterior, supongamos que tenemos tres répicas de una aplicación web dando servicio. A modo de ejemplo, utilizaremos la imagen de Docker ```jmalloc/echo-server``` para servir una aplicación web muy sencilla que simplemente responde con los detalles de la petición HTTP que recibe. Creamos una red puente de Docker y desplegamos tres de estos servicios con Docker: 
 
@@ -737,7 +740,7 @@ Algunos detalles sobre este fichero de configuración:
 - El frontend llamado ```myfrontend``` escucha el puerto 80 y reparte las peticiones a los servidores listados en el backend llamado ```webservers```. 
 - El backend ```webservers```lista los servidores entre los que se reparten las peticiones desde el frontend ```myfrontend```. En lugar de especificar la dirección IP de cada servidor, utilizamos sus nombres web1, web2 y web3 porque hemos creado una red puente de Docker que permite hacer el routing DNS de los servicios por su nombre.
 
-Ahora, creamos y ejecutamos un contenedor con HAProxy: 
+Ahora, creamos y ejecutamos un contenedor con HAProxy **(reemplazar los puertos con unos que se os haya asignado)**: 
 
 ```
 $ sudo docker run -d \
@@ -782,16 +785,16 @@ Puedes consultar las estadísticas de monitoreo de los tres servicios abriendo c
 
 Puedes hacer cambios en el fichero de configuración haproxy.cfg y relanzar el servidor HAProxy sin afectar al servicio utilizando ```docker kill```: 
 ```
-$ sudo docker kill -s HUP haproxy
+$ docker kill -s HUP haproxy
 ````
 
 Para eliminar los contenedores y la red, procede así: 
 ```
-$ sudo docker stop web1 && sudo docker rm web1
-$ sudo docker stop web2 && sudo docker rm web2
-$ sudo docker stop web3 && sudo docker rm web3
-$ sudo docker stop haproxy && sudo docker rm haproxy
-$ sudo docker network rm mynetwork
+$ docker stop web1 && docker rm web1
+$ docker stop web2 && docker rm web2
+$ docker stop web3 && docker rm web3
+$ docker stop haproxy && docker rm haproxy
+$ docker network rm mynetwork
 ```
 
 En esta referencia puedes encontrar los típicos problemas que se presentan al desplegar HAProxy y cómo resolverlos: [Troubleshooting HAProxy Errors](https://www.digitalocean.com/community/tutorial_series/common-haproxy-errors)
@@ -822,7 +825,7 @@ La **documentación** de la entrega debe contener:
 
 ## Plazos de entrega
 
-Plazo de entrega en PRADO: Hasta el 23 de Abril de 2023 a las 23:59 hrs.
+Plazo de entrega en PRADO: Hasta el 14 de Marzo de 2025 a las 23:59 hrs.
 
 ## Defensa de la práctica
 
@@ -837,7 +840,7 @@ Esta práctica incluye una tarea obligatoria para superar la práctica y dos tar
  - Se evaluará si el estudiante despliega con éxito los servicios según la arquitectura descrita en el Escenario 1 con Docker o Docker-compose. 
  - Los ficheros de configuración y documentación deben incluir con todos los detalles necesarios. 
  - El despliegue de los servicios debe realizarse sin errores y los servicios deben funcionar correctamente. 
- - Se valorará que el estudiante cree al menos una nueva categoría de usuarios en LADP y distintos usuarios nuevos para simular un entorno laboral pequeño pero realista. 
+ - Se valorará que el estudiante cree al menos una nueva categoría de usuarios en LDAP y distintos usuarios nuevos para simular un entorno laboral pequeño pero realista. 
 
 **Evaluación de las tareas adicionales para alcanzar la máxima calificación**: 
 

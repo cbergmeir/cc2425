@@ -968,11 +968,11 @@ Minikube is one of the easiest, most flexible and popular methods to run an all-
 
 For Minikube installation and getting started with this tool, we are going to follow the official [Get Started with Minikube tutorial](https://minikube.sigs.k8s.io/docs/start/) with more steps and info from the [LinuxFoundationX LFS158x EdX Course on Introduction to Kubernetes](https://learning.edx.org/course/course-v1:LinuxFoundationX+LFS158x+1T2022/)
 
-### Installation 
+### Installation (should not be needed on the server)
 
 Choose your OS and Arquitecture and Install Minikube: [(https://minikube.sigs.k8s.io/docs/start/)](https://minikube.sigs.k8s.io/docs/start/#what-youll-need)
 
-In particular, on a server where you don't have root access, you can follow these steps:
+In particular, on a server where you don't have root access, if the software is not installed and you need to install it locally for you, you can follow these steps:
 
 make a local folder for binaries if it doesn't exist already, and add it to the path:
 
