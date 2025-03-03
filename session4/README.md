@@ -58,7 +58,7 @@ services:
     ports:
      - "5000:5000"
     volumes:
-     - .:/code
+     - .:/code:Z
   redis:
     image: redis
 ```
@@ -415,7 +415,7 @@ services:
     ports:
       - "25144:5000"
     volumes:
-      - .:/code
+      - .:/code:Z
     environment:
       FLASK_DEBUG: True
   redis:
@@ -579,8 +579,8 @@ Finally, add to the ```docker-compose.yml``` the following code for ```prometheu
     ports:
       - 25146:9090
     volumes:
-      - .:/etc/prometheus
-      - prometheus-data:/prometheus
+      - .:/etc/prometheus:Z
+      - prometheus-data:/prometheus:Z
     command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
 
 volumes:
@@ -605,8 +605,8 @@ services:
     ports:
       - 25146:9090
     volumes:
-      - .:/etc/prometheus
-      - prometheus-data:/prometheus
+      - .:/etc/prometheus:Z
+      - prometheus-data:/prometheus:Z
     command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
 
 volumes:
