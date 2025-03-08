@@ -784,59 +784,55 @@ Singularity compose uses Singularity on the backend, so anything that would requ
        - fakeroot
 ```
 
+**However, for many containers this is not enough and you will still need to be root, for example to run the example from below. So, on our server most of the following examples will not work properly, and you should run them on a machine where you have root access.** 
 
 ## Quick Start
 
-For this quick start, we are going to use the singularity-compose-simple example. Singularity has a networking issue that currently doesn't allow communication between multiple containers (due to iptables and firewall issues) so for now the most we can do is show you one container. First, clone the repository:
+For this quick start, we are going to use the singularity-compose-simple examples. First, clone the repository:
 
-```$ git clone https://www.github.com/singularityhub/singularity-compose-simple```
+```$ git clone https://github.com/singularityhub/singularity-compose-examples.git```
 
-cd inside, and you'll see a singularity-compose.yml like we talked about.
+cd into one of the examples, for example ```v2.0/jupyterlab```, and you'll see a singularity-compose.yml like we talked about.
 ```
-$ cd singularity-compose-simple
+$ cd v2.0/jupyterlab
 $ ls
-app  images  LICENSE  nginx.conf  README.md  singularity-compose.yml  static
+etc.hosts  README.md    second                   work
+jupyter    resolv.conf  singularity-compose.yml
 ```
 
 Let's take a look at the singularity-compose.yml
 
 ```
-version: "1.0"
+version: "2.0"
 instances:
-  app:
-    build:
-      context: ./app
+  jupyter:
+    image: docker://umids/jupyterlab
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./app/nginx/uwsgi_params.par:/etc/nginx/uwsgi_params.par
-      - ./app/nginx/cache:/var/cache/nginx
-      - ./app/nginx/run:/var/run
-      - ./app:/code
-      - ./static:/var/www/static
-      - ./images:/var/www/images
+       - ./work:/usr/local/share/jupyter/lab/settings/
     ports:
-      - 80:80
-...
+      - 8888:8888
+    run:
+      background: true
+  second:
+    build:
+      context: ./second
+    run: []
+    depends_on:
+      - jupyter
 ```
 
-It defines a single service, app, which has both a Django application and an nginx server with the nginx-upload module enabled. It tells us right away that the folder app is the context folder, and inside we can see dependency files for nginx and django.
-
-```
-$ ls app/
-manage.py  nginx  requirements.txt  run_uwsgi.sh  Singularity  upload...
-```
-What we don't see is a container. We need to build that from the Singularity recipe. Let's do that.
+What we don't see in the folder currently is a container. We need to build that from the Singularity recipe. Let's do that.
 
 ```
 $ singularity-compose build
 ```
 
-Will generate an app.sif in the folder:
+Will generate a *.sif in the folder:
 
 ```
-$ ls app/
+$ ls second/
 
-app.sif manage.py  nginx  requirements.txt  run_uwsgi.sh  Singularity  upload...
+second.sif  Singularity
 ```
 
 And now we can bring up our instance!
@@ -847,61 +843,25 @@ Verify it's running:
 
 ```
 $ singularity-compose ps
-INSTANCES  NAME PID     IMAGE
-1           app    20023    app.sif
+INSTANCES  NAME         PID     IP              IMAGE
+1       jupyter1	772359	10.22.0.2	jupyter.sif
+2        second1	773067	10.22.0.3	second.sif
 ```
 
 And then look at logs, shell inside, or execute a command.
 
 ```
-$ singularity-compose logs app
-$ singularity-compose logs app --tail 30
-$ singularity-compose shell app
-$ singularity-compose exec app uname -a
+$ singularity-compose logs jupyter1
+$ singularity-compose logs jupyter1 --tail 30
+$ singularity-compose shell jupyter1
+$ singularity-compose exec jupyter1 uname -a
 ```
 
-When you open your browser to http://127.0.0.1 you should see the upload interface.
+When you open your browser to http://127.0.0.1:8888 you should see the jupyter interface.
 
-```
-img/upload.png
-```
 
-If you drop a file in the box (or click to select) we will use the nginx-upload module to send it directly to the server. Cool!
+Finally, the volumes that we specified in the ```singularity-compose.yml``` tell us exactly where the application needs permissions to write. The folder ```/usr/local/share/jupyter/lab/settings/``` is bound to the container at ```/work```
 
-```img/content.png```
-
-This is just a simple Django application, the database is sqlite3, and it's now appeared in the app folder:
-
-```
-$ ls app/
-app.sif  db.sqlite3  manage.py  nginx  requirements.txt  run_uwsgi.sh  Singularity  upload  uwsgi.ini
-```
-
-The images that you upload are stored in images at the root:
-
-```
-$ ls images/
-2018-02-20-172617.jpg  40-acos.png  _upload 
-```
-
-And static files are in static.
-
-```
-$ ls static/
-admin  css  js
-```
-
-Finally, the volumes that we specified in the ```singularity-compose.yml``` tell us exactly where nginx and the application need permission to write. The present working directory (where the database is written) is bound to the container at ```/code```, and nginx dependencies are bound to locations in ```/etc/nginx```. Notice how the local static and images folder are bound to locations in the container where we normally wouldn't have writen.
-```
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./app/nginx/uwsgi_params.par:/etc/nginx/uwsgi_params.par
-      - ./app/nginx/cache:/var/cache/nginx
-      - ./app/nginx/run:/var/run
-      - ./app:/code
-      - ./static:/var/www/static
-      - ./images:/var/www/images
-```
 This is likely a prime different between Singularity and Docker compose - Docker doesn't need binds for write, but rather to reduce isolation. When you develop an application, a lot of your debug will come down to figuring out where the services need to access (to write logs and similar files), which you might not have been aware of when using Docker.
 
 ### Networking 
@@ -910,8 +870,10 @@ When you bring the container up, you'll see generation of an etc.hosts file, and
 
 Let's take a look:
 ```
-10.22.0.2    app
-127.0.0.1    localhost
+10.22.0.5	second1
+10.22.0.4	jupyter1
+127.0.0.1	localhost
+
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     ip6-localhost ip6-loopback
@@ -921,17 +883,8 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 ```
 
-This file will give each container that you create (in our case, just one) a name on its local network. Singularity by default creates a bridge for instance containers, which you can conceptually think of as a router. This means that, if I were to reference the hostname "app" in a second container, it would resolve to 10.22.0.2. Singularity compose does this by generating these addresses before creating the instances, and then assigning them to it. If you would like to see the full commands that are generated, run the up with --debug (binds and full paths have been removed to make this easier to read).
+This file will give each container that you create (in our case, two) a name on its local network. Singularity by default creates a bridge for instance containers, which you can conceptually think of as a router. This means that, if I were to reference the hostname "second1" in a second container, it would resolve to 10.22.0.5. Singularity compose does this by generating these addresses before creating the instances, and then assigning them to it. If you would like to see the full commands that are generated, run the up with --debug.
 
-```
-$ singularity instance start \
-    --bind /home/vanessa/Documents/Dropbox/Code/singularity/singularity-compose-simple/etc.hosts:/etc/hosts \
-    --net --network-args "portmap=80:80/tcp" --network-args "IP=10.22.0.2" \
-    --hostname app \
-    --writable-tmpfs app.sif app
-```
-
-Control and customization of these instances is probably the coolest (and not widely used) feature of Singularity. You can create your own network configurations, and customie the arguments to the command. Read [here](https://github.com/singularityhub/singularity-compose-examples/tree/master) for more  examples of use of singularity-compose.
 
 
 # Kubernetes
