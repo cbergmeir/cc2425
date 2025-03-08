@@ -894,7 +894,7 @@ Kubernetes is an open source platform for managing containerized workloads and s
 There is an EdX course on Kubernetes running right now. Check it out here: (https://learning.edx.org/course/course-v1:LinuxFoundationX+LFS158x+1T2022/home)
 
 
-## Kubernetes Arquitecture
+## Kubernetes Architecture
 
 At a very high level, Kubernetes is a cluster of compute systems categorized by their distinct roles:
 
