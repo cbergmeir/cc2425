@@ -959,11 +959,19 @@ install kubectl ~/.local/bin/kubectl && rm kubectl
 ```
 
 ### Basic commands
-Start your cluster ```minikube start```, to use it with docker, or use the following with podman. **Podman may currently not work on the server.**
+Start your cluster. In theory, you can start it with ```minikube start```.
+
+On the server, to start it with docker, you need:
+
+```
+minikube start --container-runtime=containerd
+```
+
+To start it with podman, on the server, you can start:
 
 ```
 minikube config set rootless true
-minikube start --driver=podman
+minikube start --driver=podman --container-runtime=containerd
 ```
 
 
@@ -1153,6 +1161,9 @@ spec:
     app: nginx 
 
 ```
+
+Here, the ```port``` is the port internally in the container. You can specify an external port using ```nodePort```, however, if you don't specify an additional port, kubernetes will just give you one from a pre-specified port range, which will be probably 30000-32767. 
+
 Create the service with: 
 ```
 $ kubectl create -f webserver-svc.yaml
