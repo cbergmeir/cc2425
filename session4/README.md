@@ -1222,6 +1222,16 @@ kubectl port-forward svc/web-service 25164:80
 
 Here, if you are working on the server, you should replace 25164 with one of the ports assigned to you. You will then be able to access the service at ```http://127.0.0.1:25164```.
 
+To access it from outside, you need to do the following:
+
+```
+minikube tunnel --bind-address=0.0.0.0
+```
+
+```
+kubectl port-forward --address 0.0.0.0 svc/web-service 25164:80
+```
+
 
 ### What if one of your replicas fails?
 
