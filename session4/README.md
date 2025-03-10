@@ -1214,6 +1214,15 @@ $ minikube ip
 ```
 Now, open the browser and access the application on 192.168.99.100 at port 31074 to check the ```Welcome to nginx!``` message. If you see the message you have successfully completed the configuration of an nginx web service with 3 replicas. If you are on a server, you can use ```lynx``` which is a command-line browser, or if that is not available, you can use wget, e.g., with ```wget http://192.168.99.100:31074``` to check.
 
+If that doesn't work, we need to have an additional forwarding active:
+
+```
+kubectl port-forward svc/web-service 25164:80
+```
+
+Here, if you are working on the server, you should replace 25164 with one of the ports assigned to you. You will then be able to access the service at ```http://127.0.0.1:25164```.
+
+
 ### What if one of your replicas fails?
 
 After you have set up the webserver service, you will have 3 replicas of your nginx server running: 
