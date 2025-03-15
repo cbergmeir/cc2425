@@ -68,7 +68,7 @@ VALUES ('bcd001', 45, 'A');
 A MongoDB:
 
 ```
-db.users.insert({
+db.users.insertOne({
   user_id: 'bcd001',
   age: 45,
   status: 'A'
@@ -485,13 +485,15 @@ db.MyFirstCollection.find(
 ```
 
 O:
-> db.MyFirstCollection.find(
+```
+db.MyFirstCollection.find(
    {
       $or: [
          {key1: value1}, {key2:value2}
       ]
    }
 )
+```
 
 Mezclando todo:
 
