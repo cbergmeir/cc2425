@@ -192,22 +192,69 @@ Los documentos permiten documentos incrustados documentos incrustados documentos
 # Comenzando con MongoDB
 
 Vamos a desplegar en local un servicio de MongoDB utilizando Docker o Docker Compose siguiendo las instrucciones de la web: https://www.mongodb.com/compatibility/docker. 
-Para ello, en primer lugar desplegamos un servidor MongoDB en local y exponemos el puerto 27017 (puerto por defecto para MongoDB) por si queremos conectar MongoDB con otra aplicación en local: 
+Para ello, en primer lugar desplegamos un servidor MongoDB en el servidor y exponemos el puerto 25144 (**cambiarlo por uno de los puertos que se os haya asignado**) por si queremos conectar MongoDB con otra aplicación: 
 
-```
-docker run --name mongodb -d -p 27017:27017 mongodb/mongodb-community-server
+### **docker-compose.yml**
+```yaml
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb-container
+    restart: unless-stopped
+    ports:
+      - "25144:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+    driver: local
 ```
 
-Sin embargo, los datos que creemos serán volátiles y se eliminarán una vez que echemos abajo el contenedor. Para evitarlo, hacemos los datos persistentes en un volumen de datos con la opción ```--v```. Para desplegar el contenedor con esta opción, primero retiramos el contenedor anterior:
-```
-docker stop mongodb && docker rm mongodb
-```
-Y a continuación lo levantamos de nuevo: 
-```
-docker run --name mongodb -d -p 27017:27017 -v $(pwd)/data:/data/db mongodb/mongodb-community-server
+Esta configuración guarda los datos de forma persistente en un volumen administrado por docker.
+
+### **Cómo Usarlo**  
+
+1. Guarda este archivo como `docker-compose.yml` en un directorio.  
+2. Navega hasta el directorio en tu terminal.  
+3. Ejecuta el siguiente comando para iniciar MongoDB:  
+
+```bash
+docker compose up -d
 ```
 
-Podemos conectarnos a este servicio utilizando la [shell MongoSH](https://www.mongodb.com/try/download/shell) o el [cliente Compass con GUI](https://www.mongodb.com/try/download/compass). Prueba a instalar el cliente Compass y familiarízate con la interfaz de usuario. El cliente Compass incluye, además de la interfaz gráfica, el cliente MongoSH para interactuar con MongoDB a través de una shell. 
+4. Verifica que esté en ejecución:  
+```bash
+docker ps
+```
+
+5. Conéctate a MongoDB desde la terminal:  
+```bash
+docker exec -it mongodb-container mongosh -u admin -p secret
+```
+
+### **Detener y Eliminar los Contenedores**  
+
+Para detener MongoDB:  
+```bash
+docker compose down
+```
+Para eliminar todo (contenedores + volúmenes):  
+```bash
+docker compose down -v
+```
+
+Podemos conectarnos a este servicio utilizando la [shell MongoSH](https://www.mongodb.com/try/download/shell) o el [cliente Compass con GUI](https://www.mongodb.com/try/download/compass). 
+
+Conectarse con MongoSH:
+```
+docker exec -it mongodb-container mongosh -u admin -p secret
+```
+
+Si quieres usar el cliente Compass, tienes que instalarlo en tu ordenador local y luego conectarte a tu instancia de mongodb en el servidor. El cliente Compass incluye, además de la interfaz gráfica, el cliente MongoSH para interactuar con MongoDB a través de una shell. 
 
 ![Cliente Compass para MongoDB. Incluye una interfaz gráfica y el cliente de shell MongoSH](image.png)
 
@@ -570,7 +617,7 @@ Copiar el fichero al contenedor:
 docker cp sacramento_crime.csv mongodb-container:/sacramento_crime.csv
 ```
 
-Entrar al mongosh del contenedor:
+Entrar al ```mongosh``` del contenedor:
 ```
 docker exec -it mongodb-container mongosh -u admin -p secret
 ```
