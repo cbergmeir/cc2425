@@ -2,21 +2,27 @@
 
 Tabla de contenido:
 
-- [Usando MongoDB](#usando-mongo)
-  * [Documentos en lugar de filas/columnas](#documentos-en-lugar-de-filas-columnas)
-  * [Tipos de datos](#tipos-de-datos)
-- [Comenzando con MongoDB](#comenzando-con-mongodb)
-  * [Conectando a mongodb](#conectando-a-mongodb)
-  * [Selección/creación/eliminación de la base de datos](#selecci-n-creaci-n-eliminaci-n-de-la-base-de-datos)
-  * [Crear una colección](#crear-una-colecci-n)
-  * [Borrar las colecciones](#borrar-las-colecciones)
-  * [Trabajar con documentos sobre las colecciones](#trabajar-con-documentos-sobre-las-colecciones)
-  * [Seleccionando, Consultando y Filtrando](#seleccionando--consultando-y-filtrando)
-  * [Actualizando documentos](#actualizando-documentos)
-  * [Borrando documentos](#borrando-documentos)
-  * [Importar datos externos](#importar-datos-externos)
-  * [Clients MongoDB](#clients-mongodb)
-- [References](#references)
+* [Usando MongoDB](#usando-mongodb)
+   * [Documentos en lugar de filas/columnas](#documentos-en-lugar-de-filascolumnas)
+   * [Tipos de datos](#tipos-de-datos)
+* [Comenzando con MongoDB](#comenzando-con-mongodb)
+   * [Conectando a mongodb](#conectando-a-mongodb)
+      * [<strong>docker-compose.yml</strong>](#docker-composeyml)
+      * [<strong>Cómo Usarlo</strong>](#cómo-usarlo)
+      * [<strong>Detener y Eliminar los Contenedores</strong>](#detener-y-eliminar-los-contenedores)
+      * [<strong>Conectarse con MongoSH o Compass</strong>](#conectarse-con-mongosh-o-compass)
+   * [Selección/creación/eliminación de la base de datos](#seleccióncreacióneliminación-de-la-base-de-datos)
+   * [Crear una colección](#crear-una-colección)
+   * [Borrar las colecciones](#borrar-las-colecciones)
+   * [Trabajar con documentos sobre las colecciones](#trabajar-con-documentos-sobre-las-colecciones)
+   * [Seleccionando, Consultando y Filtrando](#seleccionando-consultando-y-filtrando)
+   * [Actualizando documentos](#actualizando-documentos)
+   * [Borrando documentos](#borrando-documentos)
+   * [Importar datos externos](#importar-datos-externos)
+   * [Ejercicios](#ejercicios)
+   * [Clients MongoDB](#clients-mongodb)
+* [References](#references)
+
 
 # Usando MongoDB
 
