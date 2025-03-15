@@ -6,7 +6,7 @@ Tabla de contenido:
   * [Documentos en lugar de filas/columnas](#documentos-en-lugar-de-filas-columnas)
     + [Tipos de datos](#tipos-de-datos)
 - [Comenzando con MongoDB](#comenzando-con-mongodb)
-  * [Conectando a mongodb:](#conectando-a-mongodb-)
+  * [Conectando a mongodb](#conectando-a-mongodb)
   * [Selección/creación/eliminación de la base de datos](#selecci-n-creaci-n-eliminaci-n-de-la-base-de-datos)
   * [Crear una colección](#crear-una-colecci-n)
   * [Borrar las colecciones](#borrar-las-colecciones)
@@ -191,7 +191,9 @@ Los documentos permiten documentos incrustados documentos incrustados documentos
 
 # Comenzando con MongoDB
 
-Vamos a desplegar en local un servicio de MongoDB utilizando Docker o Docker Compose siguiendo las instrucciones de la web: https://www.mongodb.com/compatibility/docker. 
+## Conectando a mongodb
+
+Vamos a desplegar un servicio de MongoDB utilizando Docker o Docker Compose siguiendo las instrucciones de la web: https://www.mongodb.com/compatibility/docker. 
 Para ello, en primer lugar desplegamos un servidor MongoDB en el servidor y exponemos el puerto 25144 (**cambiarlo por uno de los puertos que se os haya asignado**) por si queremos conectar MongoDB con otra aplicación: 
 
 ### **docker-compose.yml**
@@ -249,6 +251,7 @@ docker compose down -v
 
 Podemos conectarnos a este servicio utilizando la [shell MongoSH](https://www.mongodb.com/try/download/shell) o el [cliente Compass con GUI](https://www.mongodb.com/try/download/compass). 
 
+### **Conectarse con MongoSH o Compass**
 Conectarse con MongoSH:
 ```
 docker exec -it mongodb-container mongosh -u admin -p secret
