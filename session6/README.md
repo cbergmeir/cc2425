@@ -4,7 +4,7 @@ Tabla de contenido:
 
 - [Usando MongoDB](#usando-mongo)
   * [Documentos en lugar de filas/columnas](#documentos-en-lugar-de-filas-columnas)
-    + [Tipos de datos](#tipos-de-datos)
+  * [Tipos de datos](#tipos-de-datos)
 - [Comenzando con MongoDB](#comenzando-con-mongodb)
   * [Conectando a mongodb](#conectando-a-mongodb)
   * [Selección/creación/eliminación de la base de datos](#selecci-n-creaci-n-eliminaci-n-de-la-base-de-datos)
@@ -170,7 +170,7 @@ Los documentos permiten documentos incrustados documentos incrustados documentos
 ```
 
 
-### Tipos de datos
+## Tipos de datos
 
 * String − This is the most commonly used datatype to store the data.
 * Integer − This type is used to store a numerical value.
@@ -252,6 +252,7 @@ docker compose down -v
 Podemos conectarnos a este servicio utilizando la [shell MongoSH](https://www.mongodb.com/try/download/shell) o el [cliente Compass con GUI](https://www.mongodb.com/try/download/compass). 
 
 ### **Conectarse con MongoSH o Compass**
+
 Conectarse con MongoSH:
 ```
 docker exec -it mongodb-container mongosh -u admin -p secret
