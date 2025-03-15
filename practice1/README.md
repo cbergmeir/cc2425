@@ -122,7 +122,7 @@ MariaDB
 
 ##### Autenticación
 
-Autenticación de usuarios a través de uno o varios servidores LDAP. Para ello, desplegar un servicio de LDAP tal y como se explica en la sección [Despliegue y gestión de servicios de autenticación de usuarios con LDAP](#31-despliegue-y-gestión-de-servicios-de-autenticación-de-usuarios-con-ldap) y luego [integrar LDAP con ownCloud como se explica en la sección correspondiente] (#32-despliegue-de-owncloud). 
+Autenticación de usuarios a través de uno o varios servidores LDAP. Para ello, desplegar un servicio de LDAP tal y como se explica en la sección [Despliegue y gestión de servicios de autenticación de usuarios con LDAP](#31-despliegue-y-gestión-de-servicios-de-autenticación-de-usuarios-con-ldap) y luego [integrar LDAP con ownCloud como se explica en la sección correspondiente](#32-despliegue-de-owncloud). 
 
 ##### Almacenamiento
 
