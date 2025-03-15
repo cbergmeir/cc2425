@@ -1,7 +1,7 @@
 # You can run these commands in Spark using two different alternatives: 
 # A- from an interactive environment with "pyspark", copy and paste the commands and play with them
 # B- Once your script is ready, run it from the command line with spark-submit: /opt/spark-2.2.0/bin/spark-submit --master spark://hadoop-master:7077 --total-executor-cores 5 --executor-memory 1g script.py
-#       For option B, you need to include in your script a definition of a spark context as described in https://github.com/ccano/cc2223/blob/main/session8/README.md#ejemplo-de-plantilla-para-la-práctica-3
+#       For option B, you need to include in your script a definition of a spark context as described in https://github.com/cbergmeir/cc2425/blob/main/session9/README.md#ejemplo-de-plantilla-para-la-práctica-3
 
 # Import required libraries. Check out pyspark.sql and pyspark.ml
 from pyspark.sql.functions import isnan, when, count, col

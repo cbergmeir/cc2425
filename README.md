@@ -14,7 +14,7 @@
 ## Session 1
 
 - Introduction to the Course. 
-- [Managing Azure VMs: Create, deploy and add services](https://github.com/ccano/cc2223/tree/main/session1)
+- [Managing Azure VMs: Create, deploy and add services](./session1/README.md)
 
 
 ## Session 2

@@ -181,7 +181,7 @@ Often, projects will add many more components on top of this stack, such as a UI
 
 For installing OpenFaaS on top of a Kubernetes installation, we will proceed as follows: 
 
-- Install minikube (See [session 4](https://github.com/ccano/cc2223/tree/main/session4)).
+- Install minikube (See [Session 4](../session4)).
 - Install [arkade](https://github.com/alexellis/arkade). 
 - Install OpenFaaS on Kubernetes using arkade.
 
@@ -383,7 +383,7 @@ Authenticate to the CLI, and create secrets for your functions:
 
 For each command, you can get more information with `faas-cli COMMAND --help` to see example usage and the various flags that are allowed. You can also find help for some of the commands in the OpenFaaS documentation.
 
-We will continue the CLI explanation with more examples in our second assignment: [Practice 2](https://github.com/ccano/cc2223/tree/main/practice2).
+We will continue the CLI explanation with more examples in our second assignment: [Practice 2](../practice2).
 
 ### Code samples
 

@@ -555,7 +555,7 @@ Descarga este [conjunto de datos](./sacramento_crime.csv) (7585 rows and 794 KB)
 Puedes hacerlo con ``curl``:
 
 ```
-curl -O https://github.com/ccano/cc2223/blob/main/session6/sacramento_crime.csv
+curl -O https://github.com/cbergmeir/cc2425/blob/main/session6/sacramento_crime.csv
 ```
 
 En MongoDB Compass crea una nueva colección ``Crime`` e importa el fichero con el botón ``ADD DATA -> Upload .csv`` . Para sacar el máximo partido de esta colección, especifica que el campo ``cdatetime``es de tipo ``Date``. El resto de campos puedes dejarlos con el tipo por defecto asignado tras la autodetección de tipos. 
