@@ -975,7 +975,7 @@ conf = SparkConf().setAppName("Practica 3")
 sc = SparkContext(conf=conf)
 ```
 
-Podéis empezar a programar sobre [esta plantilla de ejemplo para la Práctica 3](https://github.com/ccano/cc2223/blob/main/session8/P3_plantilla.py). 
+Podéis empezar a programar sobre [esta plantilla de ejemplo para la Práctica 3](P3_plantilla.py). 
 
 # Referencias
 Podéis encontrar multitud de ejemplos y tutoriales guiados para el análisis de datos con técnicas de ML utilizando Spark:

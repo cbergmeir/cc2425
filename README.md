@@ -2,12 +2,12 @@
 
 - Sesión 1: Máquinas virtuales en Azure
 - Sesiones 2-4: Introducción a la orquestación de contenedores: Docker-compose, Singularity compose, Kubernetes 
-- Sesión 5: Presentación práctica 1 - Desarrollo y despliegue de servicios en Cloud usando contenedores
+- Sesión 5pp: Presentación práctica 1 - Desarrollo y despliegue de servicios en Cloud usando contenedores
 - Sesión 6: Introducción a las BDs en CC: MongoDB
 - Sesión 7: Funciones como servicio FaaS - OpenFaaS 
-- Presentación práctica 2 - FaaS / BDs en Cloud
-- Sesión 8, 9 y 10: HDFS, Hadoop y Spark + MLlib  en hadoop.ugr.es
-- Presentación práctica 3 - BigData y procesamiento de datos en Cloud 
+- Sesión 8pp: Presentación práctica 2 - FaaS / BDs en Cloud
+- Sesión 9, 10 y 11: HDFS, Hadoop y Spark + MLlib  en hadoop.ugr.es
+- Sesión 12pp: Presentación práctica 3 - BigData y procesamiento de datos en Cloud 
 
 
 
@@ -43,7 +43,7 @@ Introduction to FaaS
 
 - [FaaS](./session7/README.md)
 
-## Session 8 , 9 and 10
+## Session 9 , 10 and 11
 
-- [Introduction to HDFS, Hadoop and Spark+MLlib](./session8/README.md)
+- [Introduction to HDFS, Hadoop and Spark+MLlib](./session9/README.md)
 
