@@ -21,8 +21,8 @@ The main idea of the practice is to create one or more functions that allow you 
 
 For this you will need the following in terms of platforms/tools to install:
 
-- Install kubernetes (e.g. minikube). Detailed instructions available in [Session 4](session4/)  
-- Install a RAS platform: OpenFaaS on top of Kubernetes. Detailed instructions available in [Session 7](session7/)
+- Install kubernetes (e.g. minikube). Detailed instructions available in [Session 4](../session4/)  
+- Install a RAS platform: OpenFaaS on top of Kubernetes. Detailed instructions available in [Session 7](../session7/)
 
 
 ## How to deploy an available function as a service

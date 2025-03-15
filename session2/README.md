@@ -7,12 +7,12 @@
       * [2. How containers differ from virtual machines](#2-how-containers-differ-from-virtual-machines)
       * [3. Why you do (and don't) need containers](#3-why-you-do-and-dont-need-containers)
    * [Introduction to Docker](#introduction-to-docker)
-      * [Installation](#installation)
-      * [1. Running first Docker container](#1-running-first-docker-container)
-      * [2. Managing Docker images](#2-managing-docker-images)
-      * [3. Managing Docker containers](#3-managing-docker-containers)
-      * [4. Working with Docker containers](#4-working-with-docker-containers)
-      * [5.  Creating a new Docker image - Dockerfiles](#5--creating-a-new-docker-image---dockerfiles)
+      * [1. Installation](#1-installation)
+      * [2. Running first Docker container](#2-running-first-docker-container)
+      * [3. Managing Docker images](#3-managing-docker-images)
+      * [4. Managing Docker containers](#4-managing-docker-containers)
+      * [5. Working with Docker containers](#5-working-with-docker-containers)
+      * [6.  Creating a new Docker image - Dockerfiles](#6--creating-a-new-docker-image---dockerfiles)
 * [Control how much memory and CPU the containers use](#control-how-much-memory-and-cpu-the-containers-use)
    * [1. Limit RAM Usage in Docker](#1-limit-ram-usage-in-docker)
       * [Hard Memory Limit (--memory)](#hard-memory-limit---memory)
@@ -126,15 +126,15 @@ In this section you will learn all these steps.
 - [**How to work with Docker containers**](#4-working-with-docker-containers)
 - [**How to build a Docker image**](5-Creating-a-new-Docker-image---Dockerfiles)
 
-### Installation
+### 1. Installation
 
-If you work on our server, you need to run the following sript before you can use docker:
+If you work on our server, you need to run the following script before you can use docker:
 
 ```
 dockerd-rootless-setuptool.sh install
 ```
 
-### 1. Running first Docker container
+### 2. Running first Docker container
 
 For our first example, we will run a short Docker command to download the *Hello World* of **Docker images** and start our very first **Docker container**.
 
@@ -212,7 +212,7 @@ For more examples and ideas, visit:
     then sent back to the terminal for us to see. That means we have **successfully
     created and run our very first Docker container**.
 
-### 2. Managing Docker images
+### 3. Managing Docker images
 
 - **Examine local images**
 
@@ -284,7 +284,7 @@ For more examples and ideas, visit:
 
     In this case we use the **image name** and Docker prints out the confirmation that it was removed successfully.
 
-### 3. Managing Docker containers
+### 4. Managing Docker containers
 
 - **Examine currently running containers**
 
@@ -332,7 +332,7 @@ For more examples and ideas, visit:
 
     Here we used the Docker-assigned name to remove the container. We can also use the container ID to achieve the same result. Make sure you replace the name above with the name or the container ID that you got by running the `docker container ls -a` command.
 
-### 4. Working with Docker containers
+### 5. Working with Docker containers
 
 Using a `hello-world` image is one thing, actually doing some work with containers is another. 
 
@@ -437,7 +437,7 @@ I have no name!@46023ae04069:/$
 
 We have launched a new container with user ID 1000 and group ID 1000 (the format is `--user [user ID]:[group ID]`. As we have not created this user inside the container, Docker has no idea who that user is exactly, but we can still perform various tasks with the same permissions as the original user on the host OS.
 
-### 5.  Creating a new Docker image - Dockerfiles
+### 6.  Creating a new Docker image - Dockerfiles
 
 Dockerfile is a simple text file with a set of command or instruction. These commands/instructions are executed successively to perform actions on the base image to create a new docker image.
 
