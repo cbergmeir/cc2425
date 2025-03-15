@@ -293,10 +293,10 @@ db.MySecondCollection.drop();
 
 ## Trabajar con documentos sobre las colecciones
 
-Para insertar datos en la colección de MongoDB, necesita usar el método ``insert()`` o ``save()`` de MongoDB.
+Para insertar datos en la colección de MongoDB, necesitamos usar los métodos ``insertOne()``, ``insertMany()`` o ``bulkWrite()`` de MongoDB.
 
 ```
-> db.MyFirstCollection.insert(<document>);
+db.MyFirstCollection.insertOne(<document>);
 ```
 
 Ejemplo de documento: place 
@@ -328,7 +328,7 @@ Ejemplo de documento: place
 Para insertar:
 
 ```
-db.MyFirstCollection.insert(
+db.MyFirstCollection.insertOne(
 {    
      "bounding_box":
       {
@@ -356,7 +356,7 @@ db.MyFirstCollection.insert(
 Comprobar si el documento está almacenado:
 
 ```
-> db.MyFirstCollection.find();
+db.MyFirstCollection.find();
 ```
 
 Añade multiple documentos:
@@ -411,7 +411,7 @@ Añade multiple documentos:
 y:
 
 ```
-db.MyFirstCollection.insert(places)
+db.MyFirstCollection.insertMany(places)
 ```
 
 En el documento insertado, si no especificamos el parámetro ``_id``, entonces MongoDB asigna un ObjectId único para este documento.
@@ -421,19 +421,19 @@ En el documento insertado, si no especificamos el parámetro ``_id``, entonces M
 Muestra todos los documentos en ``MyFirstCollection``:
 
 ```
-> db.MyFirstCollection.find();
+db.MyFirstCollection.find();
 ```
 
 Sólo un documento:
 
 ```
-> db.MyFirstCollection.findOne();
+db.MyFirstCollection.findOne();
 ```
 
 Cuenta los documentos, añade  ``.count()`` al comando:
 
 ```
-> db.MyFirstCollection.find().count();
+db.MyFirstCollection.find().count();
 ```
 
 Selecciona o busca mediante campos, por ejemplo como ``bounding_box.type``:
@@ -456,7 +456,7 @@ Selecciona o busca mediante campos, por ejemplo como ``bounding_box.type``:
 
 
 ```
-> db.MyFirstCollection.find({"bounding_box.type": "Polygon"})
+db.MyFirstCollection.find({"bounding_box.type": "Polygon"})
 ```
 
 
@@ -475,7 +475,7 @@ Más o igual que : ``gte`` Greater than equal, ``ne`` Not equal, etc.
 Y:
 
 ```
-> db.MyFirstCollection.find(
+db.MyFirstCollection.find(
    {
       $and: [
          {key1: value1}, {key2:value2}
@@ -521,7 +521,7 @@ db.MyFirstCollection.find({"name": /.*Wash.*/})
 Sintaxis:
 
 ```
-> db.MyFirstCollection.update(<selection criteria>, <data to update>)
+db.MyFirstCollection.update(<selection criteria>, <data to update>)
 ```
 
 Ejemplo:
@@ -552,13 +552,79 @@ db.MyFirstCollection.deleteMany({'country':'United States'})
 
 Descarga este [conjunto de datos](./sacramento_crime.csv) (7585 rows and 794 KB)
 
-Puedes hacerlo con ``curl``:
+Puedes hacerlo con ``wget``:
 
 ```
-curl -O https://github.com/cbergmeir/cc2425/blob/main/session6/sacramento_crime.csv
+wget https://github.com/cbergmeir/cc2425/raw/refs/heads/main/session6/sacramento_crime.csv
 ```
 
-En MongoDB Compass crea una nueva colección ``Crime`` e importa el fichero con el botón ``ADD DATA -> Upload .csv`` . Para sacar el máximo partido de esta colección, especifica que el campo ``cdatetime``es de tipo ``Date``. El resto de campos puedes dejarlos con el tipo por defecto asignado tras la autodetección de tipos. 
+Luego, por ejemplo con MongoDB Compass, puedes crear una nueva colección ``Crime`` e importar el fichero con el botón ``ADD DATA -> Upload .csv`` . Para sacar el máximo partido de esta colección, especifica que el campo ``cdatetime``es de tipo ``Date``. El resto de campos puedes dejarlos con el tipo por defecto asignado tras la autodetección de tipos. 
+
+Con ```mongosh``` también se puede hacer, de la siguiente forma:
+
+Copiar el fichero al contenedor:
+
+```
+docker cp sacramento_crime.csv mongodb-container:/sacramento_crime.csv
+```
+
+Entrar al mongosh del contenedor:
+```
+docker exec -it mongodb-container mongosh -u admin -p secret
+```
+
+Crear una base de datos:
+
+```
+use sacramento_crime;
+```
+
+Importar los datos:
+
+```javascript
+
+const fs = require('fs');
+const filePath = '/sacramento_crime.csv'; //Here goes the filename of the csv file
+
+const data = fs.readFileSync(filePath, 'utf8').split('\n');
+const headers = data[0].split(',').map(header => header.trim());
+
+const collection = db.getCollection('Crime');  // Collection name
+
+for (let i = 1; i < data.length; i++) {
+    const row = data[i].split(',').map(value => value.trim());
+    
+    if (row.length === headers.length) {
+        let doc = {};
+        
+        headers.forEach((header, index) => {
+            if (header === "cdatetime") {
+                // Convert to ISO Date format
+                doc[header] = new Date(row[index]);
+            } else {
+                doc[header] = row[index];
+            }
+        });
+
+        collection.insertOne(doc);
+    }
+}
+
+print("CSV import into 'Crime' collection complete!");
+```
+
+Explicación del Código: 
+- Lee el archivo CSV desde la ruta especificada.
+- Extrae los encabezados (primera fila del CSV) y elimina los espacios en blanco.
+- Itera sobre los datos, creando documentos JSON para MongoDB.
+- Inserta cada fila como un documento en la colección.
+
+Verificar los resultados:
+
+```javascript
+db.Crime.find().pretty();
+```
+
 
 ## Ejercicios 
 
