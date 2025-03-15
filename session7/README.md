@@ -6,7 +6,7 @@
 Before we dive into Function as a Service (FaaS), let's see what the journey has been before FaaS: 
 Physical Servers > Virtual Machines > Containers > Functions. 
 
-Earlier, Physical Servers were used to run applications. Though they offered good performance, they were meant to support the working of specific applications only. If another application were to run on them, it would affect the workflows of both. The rise of Virtual Machines in 2001 allows enabling application-specific resources from physical machines to VM instances. This decreased the infrastructure concerns related to particular applications on physical servers. Then Docker containers came, which provided a lightweight alternative to Virtual machines by encapsulating only the application and it is specific dependencies inside a container. 
+Earlier, Physical Servers were used to run applications. Though they offered good performance, they were meant to support the working of specific applications only. If another application were to run on them, it would affect the workflows of both. The rise of Virtual Machines in 2001 allows enabling application-specific resources from physical machines to VM instances. This decreased the infrastructure concerns related to particular applications on physical servers. Then Docker containers came, which provided a lightweight alternative to virtual machines by encapsulating only the application and its specific dependencies inside a container. 
 
 Functions make the developer's process even more autonomous. 
 Functions are code snippets inside the container. 

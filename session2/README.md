@@ -7,6 +7,7 @@
       * [2. How containers differ from virtual machines](#2-how-containers-differ-from-virtual-machines)
       * [3. Why you do (and don't) need containers](#3-why-you-do-and-dont-need-containers)
    * [Introduction to Docker](#introduction-to-docker)
+      * [Installation](#installation)
       * [1. Running first Docker container](#1-running-first-docker-container)
       * [2. Managing Docker images](#2-managing-docker-images)
       * [3. Managing Docker containers](#3-managing-docker-containers)
@@ -124,6 +125,14 @@ In this section you will learn all these steps.
 - [**How to manage your Docker containers**](#3-managing-docker-containers)
 - [**How to work with Docker containers**](#4-working-with-docker-containers)
 - [**How to build a Docker image**](5-Creating-a-new-Docker-image---Dockerfiles)
+
+### Installation
+
+If you work on our server, you need to run the following sript before you can use docker:
+
+```
+dockerd-rootless-setuptool.sh install
+```
 
 ### 1. Running first Docker container
 

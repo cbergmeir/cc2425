@@ -8,7 +8,7 @@ Implementing face recognition using Functions-as-a-Service
 - Install and deploy a tool for container orchestration: Kubernetes.
 - Deploy the functionality of the function catalogue and functions service through OpenFaaS.
 - Deploy different available functions for FaaS for face recognition. 
-- Implement a scalable function that would become a component for biometric identitication of users based on face images. 
+- Implement a scalable function that would become a component for biometric identification of users based on face images. 
 
 The main idea of the practice is to create one or more functions that allow you to:
 
@@ -21,8 +21,8 @@ The main idea of the practice is to create one or more functions that allow you 
 
 For this you will need the following in terms of platforms/tools to install:
 
-- Install kubernetes (e.g. minikube). Detailed instructions available in [Session 4](https://github.com/ccano/cc2223/tree/main/session4)  
-- Install a RAS platform: OpenFaaS on top of Kubernetes. Detailed instructions available in [Session 7](https://github.com/ccano/cc2223/tree/main/session7)
+- Install kubernetes (e.g. minikube). Detailed instructions available in [Session 4](session4/)  
+- Install a RAS platform: OpenFaaS on top of Kubernetes. Detailed instructions available in [Session 7](session7/)
 
 
 ## How to deploy an available function as a service

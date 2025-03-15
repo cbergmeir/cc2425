@@ -248,7 +248,7 @@ hdfs dfs -getmerge /user/your-username/ merged.txt
 
 ## Exercice
 
-- Create 5 files in yout local account with the following names:
+- Create 5 files in your local account with the following names:
   - part1.dat ,part2.dat, part3.dat, part4.dat, part5.dat
 - Copy files to HDFS
 - Create the following HDFS folder structure:
