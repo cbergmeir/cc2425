@@ -1,4 +1,4 @@
-# Sesión 6 : Introducción a MongoDB
+# Sesión 6: Introducción a MongoDB
 
 Tabla de contenido:
 
