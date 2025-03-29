@@ -41,7 +41,7 @@ Summing up, FaaS is a serverless way to execute modular pieces of code. FaaS let
 
 *More complexity required for testing*: It can be very difficult to incorporate FaaS code into a local testing environment, making thorough testing of an application a more intensive task.
 
-### List of Function as a Service (FaaS) Service providers on Public Clouds
+### List of Function as a Service (FaaS) providers on Public Clouds
 
 - Microsoft Azure
 - Amazon Web Services (AWS)
@@ -177,7 +177,7 @@ Our bare essentials for Serverless on Kubernetes are:
 Often, projects will add many more components on top of this stack, such as a UI, and API gateway, auto-scaling, APIs, and many more.
 
 
-## OpenFaaS Installation instructions
+## OpenFaaS Installation instructions (not needed on the UGR server)
 
 For installing OpenFaaS on top of a Kubernetes installation, we will proceed as follows: 
 
@@ -187,6 +187,13 @@ For installing OpenFaaS on top of a Kubernetes installation, we will proceed as 
 
 You might choose a different installation pipeline for your system. Check the OpenFaas website for installation manuals and instructions. 
 
+In essence, if you have minikube working, the following to commands should install arkade and OpenFaaS:
+
+```
+curl -sLS https://get.arkade.dev | sudo sh
+curl -SLsf https://cli.openfaas.com | sudo sh
+```
+
 ### Installation of Arkade and OpenFaas
 
 Arkade is an App installer for Kubernetes. It relies on Helm3 and Kubernetes, and eases and speeds up the installation of over 50 apps. 
@@ -195,11 +202,6 @@ We will use arkade to install OpenFaaS.
 To install and run arkade we first need to run minikube: 
 ```
 minikube start
-```
-
-Then, we install arkade (you can find more installation instructions [here](https://github.com/alexellis/arkade))
-```
-curl -sLS https://get.arkade.dev |sudo sh
 ```
 
 Then, we install openfaas using arkade: 
@@ -250,25 +252,33 @@ prometheus     1/1     1            1           1m
 queue-worker   1/1     1            1           1m
 ```
 
-Run again ``arkade info openfaas`` and run the specified commands: 
+**In particular, on the UGR server, you can get things up and running with the following. You need to replace 25146 with one of your assigned ports. The last command will set up and print the admin password for login into the OpenFaaS gateway. Copy this password to use it to log into the UI.**
+
 ```
-# Get the faas-cli
-curl -SLsf https://cli.openfaas.com | sudo sh
+minikube tunnel --bind-address=0.0.0.0 &
+```
 
-# Forward the gateway to your machine
-kubectl rollout status -n openfaas deploy/gateway
-kubectl port-forward -n openfaas svc/gateway 8080:8080 &
+```
+kubectl port-forward -n openfaas --address 0.0.0.0 svc/gateway 25146:8080 &
+```
 
-# If basic auth is enabled, you can now log into your gateway:
+```
+export OPENFAAS_URL=http://127.0.0.1:25146
+```
+
+```
 PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
-echo -n $PASSWORD | faas-cli login --username admin --password-stdin
-
-echo $PASSWORD
 ```
 
-**This last command will set up and print the admin password for login into the OpenFaaS gateway. Copy this password to use it to log into the UI.**
+```
+echo -n $PASSWORD | faas-cli login --username admin --password-stdin
+```
 
-Now you can open a browser to ``http://127.0.0.1:8080/ui/`` and log in using username ``admin`` and the password you just copied. 
+```
+echo -n $PASSWORD
+```
+
+Now you can open a browser to ``http://<put_server_name_here>:25146/ui/`` and log in using username ``admin`` and the password you just copied. 
 
 ![](OpenFaaSGateway.png)
 
@@ -292,12 +302,6 @@ curl -sL http://127.0.0.1:8080/function/print-env
 ```
 
 The `Invocation Count` is the global count of invocations read from the built-in Prometheus time-series. **The *Function process* is the actual command being called when the function is invoked (you can change it)**. 
-
-From the command line you can also manage your OpenFaaS functions using the command `faas-cli`. You can install this command with: 
-```
-curl -SLsf https://cli.openfaas.com | sudo sh
-```
-and explore its use to list active functions and pull existing functions from public repos. 
 
 
 ### Exercise
@@ -359,8 +363,10 @@ You can get a complete list of commands with `faas-cli --help`.
 
 Search and deploy pre-made functions from the Function Store or find a function template for your specific language:
 
-- `faas-cli store list/deploy`
-- `faas-cli template store list/pull`
+- `faas-cli store list`
+- `faas-cli store deploy`
+- `faas-cli template store list`
+- `faas-cli template store pull`
 
 Create, build, and publish a function followed by deploying it to your cluster:
 

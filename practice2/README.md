@@ -17,7 +17,7 @@ The main idea of the practice is to create one or more functions that allow you 
 - The function should return the image with the detected faces framed in a rectangle.
 
 
-## Installation requirements
+## Installation requirements (not needed on the UGR server)
 
 For this you will need the following in terms of platforms/tools to install:
 
@@ -126,7 +126,7 @@ Deployed. 202 Accepted.
 URL: http://127.0.0.1:8080/function/face-detect-opencv
 ```
 
-Here you get the URLs of the two functions. You can also see them now in the GUI OpenFaaS portal: `http://127.0.0.1:8080/ui/`.
+Here you get the URLs of the two functions. You can also see them now in the GUI OpenFaaS portal: `http://127.0.0.1:8080/ui/`. **On the UGR server, replace this with the correct URL and port, as shown in [Session 7](../session7/)**
 
 You can run the functions in the UI by entering an URL for an image in the *Request body* field as shown in the following capture: 
 
@@ -164,44 +164,56 @@ If you are using node.js, java, or other languages, check the following examples
 Specifically for the OpenFaaS platform example, the function would be created in this way:
 
 ```
-$ faas-cli new --lang python facesdetection-python
+$ faas-cli new --lang python3-http facesdetection-python
 ```
 
-This creates three files for you:
+This creates the following files for you:
 
 ```
+stack.yaml
 facesdetection-python/handler.py
+facesdetection-python/handler_test.py
 facesdetection-python/requirements.txt
 facesdetection-python.yml
 ```
 
 The `handler.py` file contains your code that responds to a function invocation:
 ```
-def handle(req): 
-    return req
+def handle(event, context):
+    return {
+        "statusCode": 200,
+        "body": "Hello from OpenFaaS!"
+    }
 ```
 Edit the `handler.py` file to the following so that it will print back the request to the user:
 
 ```
-def handle(req): 
-    return "Input: {}".format(req)
+def handle(event, context):
+    return {
+        "statusCode": 200,
+        "body": "Hello from OpenFaaS!"
+        "Input event: {}".format(event)
+        "Input context: {}".format(context)
+    }
 ```
 
 
 The `requirements.txt` file can be used to install pip modules at build time. Pip modules add support for add-ons like MySQL or Numpy (machine learning).
 
 
-The `.yml` contains information on how to build and deploy your function:
+The `stack.yaml` contains information on how to build and deploy your function:
 
-version: 1.0 
-provider: 
-  name: openfaas 
-  gateway: http://127.0.0.1:8080 
-functions: 
-  facesdetection-python: 
-    lang: python3 
-    handler: ./facesdetection-python 
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  facesdetection-python:
+    lang: python3-http
+    handler: ./facesdetection-python
     image: yourRegistryPrefixWillBeHere/facesdetection-python:latest
+
+
 
 The main fields we want to study here are:
 
@@ -211,7 +223,7 @@ The main fields we want to study here are:
 
 You can largely ignore the `provider` fields, which are optional, but they do allow you to hard-code an alternative gateway address other than the default.
 
-Now, there are three parts to getting your function up and running both initially and for updating:
+Now, there are three parts to getting your function up and running both initially and for updating. Run the following from the folder where `stack.yaml` is located:
 
 - `faas-cli build`: Create a local container image, and install any other files needed, like those in the requirements.txt file.
 - `faas-cli push`: Transfer the function’s container image from our local Docker library up to the hosted registry.
