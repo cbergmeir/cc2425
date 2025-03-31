@@ -196,6 +196,7 @@ The `requirements.txt` file can be used to install pip modules at build time. Pi
 
 The `stack.yaml` contains information on how to build and deploy your function:
 
+```
 version: 1.0
 provider:
   name: openfaas
@@ -205,7 +206,7 @@ functions:
     lang: python3-http
     handler: ./facesdetection-python
     image: yourRegistryPrefixWillBeHere/facesdetection-python:latest
-
+```
 
 
 The main fields we want to study here are:
@@ -298,7 +299,7 @@ The zip file must contain the following:
 - Implemented functions with a detailed description of any improvements you added to the basic code to achieve a better  performance. 
 - Script to deploy the function on OpenFaaS.
 
-Deadline for submission: 21-May-2023 23:59:00
+Deadline for submission: 24-April-2025 23:59:00
 
 
 ## References 
