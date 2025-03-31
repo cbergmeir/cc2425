@@ -150,14 +150,7 @@ Evaluate both functions: `face-detect-pigo` and `face-detect-opencv` on some tes
 
 **For function development you can choose any language that is supported by the functions-as-a-service platform. If you want to use another language for function design, you will need to implement the function from a container.**
 
-If you are using node.js, java, or other languages, check the following examples:
-
-- R https://github.com/openfaas/faas/tree/master/sample-functions/BaseFunctions/R
-- GoLang https://github.com/openfaas/faas/tree/master/sample-functions/BaseFunctions/java
-- Java https://github.com/openfaas/faas/tree/master/sample-functions/BaseFunctions
-- Node https://github.com/openfaas/faas/tree/master/sample-functions/BaseFunctions/node
-- Python https://github.com/openfaas/faas/tree/master/sample-functions/BaseFunctions/python
-
+If you are using node.js, java, or other languages, check the examples [here.](https://github.com/openfaas/faas/tree/master/sample-functions)
 
 ## My first function (template with Python)
 
