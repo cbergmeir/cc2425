@@ -199,7 +199,9 @@ curl -SLsf https://cli.openfaas.com | sudo sh
 Arkade is an App installer for Kubernetes. It relies on Helm3 and Kubernetes, and eases and speeds up the installation of over 50 apps. 
 We will use arkade to install OpenFaaS. 
 
-To install and run arkade we first need to run minikube. Check [Session 4](../session4) how to run it on the GUR server, usually it can be started just with the following: 
+To install and run arkade we first need to run minikube. 
+
+Check [Session 4](../session4) how to run minikube on the UGR server, usually it can be started just with the following: 
 ```
 minikube start
 ```
