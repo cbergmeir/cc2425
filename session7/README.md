@@ -199,7 +199,7 @@ curl -SLsf https://cli.openfaas.com | sudo sh
 Arkade is an App installer for Kubernetes. It relies on Helm3 and Kubernetes, and eases and speeds up the installation of over 50 apps. 
 We will use arkade to install OpenFaaS. 
 
-To install and run arkade we first need to run minikube: 
+To install and run arkade we first need to run minikube. Check [Session 4](../session4) how to run it on the GUR server, usually it can be started just with the following: 
 ```
 minikube start
 ```
@@ -400,58 +400,59 @@ Official templates exist for many popular languages and are easily extensible wi
 * Node.js (`node12`) example:
 
     ```js
-   "use strict"
+	"use strict"
 
-    module.exports = async (event, context) => {
-        return context
-            .status(200)
-            .headers({"Content-Type": "text/html"})
-            .succeed(`
-            <h1>
-                👋 Hello World 🌍
-            </h1>`);
-    }
-
+	module.exports = async (event, context) => {
+	    return context
+		.status(200)
+		.headers({"Content-Type": "text/html"})
+		.succeed(`
+		<h1>
+		    👋 Hello World 🌍
+		</h1>`);
+	}
     ```
     *handler.js*
 
 * Python 3 example:
 
     ```python
-    import requests
+	import requests
 
-    def handle(req):
-        r =  requests.get(req, timeout = 1)
-        return "{} => {:d}".format(req, r.status_code)
+	def handle(req):
+	    r =  requests.get(req, timeout = 1)
+	    return "{} => {:d}".format(req, r.status_code)
     ```
     *handler.py*
 
 * Golang example (`golang-http`)
 
     ```golang
-    package function
+	package function
 
-    import (
-        "log"
+	import (
+	    "fmt"
+	    "net/http"
 
-        "github.com/openfaas-incubator/go-function-sdk"
-    )
+	    handler "github.com/openfaas/templates-sdk/go-http"
+	)
 
-    func Handle(req handler.Request) (handler.Response, error) {
-        var err error
+	// Handle a function invocation
+	func Handle(req handler.Request) (handler.Response, error) {
+	    var err error
 
-        return handler.Response{
-            Body: []byte("Try us out today!"),
-            Header: map[string][]string{
-                "X-Served-By": []string{"openfaas.com"},
-            },
-        }, err
-    }
+	    message := fmt.Sprintf("Body: %s", string(req.Body))
+
+	    return handler.Response{
+		Body:       []byte(message),
+		StatusCode: http.StatusOK,
+	    }, err
+	}
     ```
 
 
 # References
-- OpenFaaS official documentation website (https://ericstoekl.github.io/faas/)
+- OpenFaaS official training materials (https://docs.openfaas.com/tutorials/training)
 - EdX Course by the Linux Foundation: Serverless, FaaS with OpenFaaS and Kubernetes: (https://learning.edx.org/course/course-v1:LinuxFoundationX+LFS157x+1T2022)
 
 
