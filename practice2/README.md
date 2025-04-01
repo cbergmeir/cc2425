@@ -178,15 +178,34 @@ def handle(event, context):
         "body": "Hello from OpenFaaS!"
     }
 ```
-Edit the `handler.py` file to the following so that it will print back the request to the user:
+You can edit the `handler.py` file to the following so that it will print back the request to the user:
 
 ```
+import sys
+import json
+
 def handle(event, context):
+    version = sys.version
+
+    def inspect_object(obj, name):
+        result = {}
+        for attr in dir(obj):
+            if attr.startswith("__"):
+                continue
+            try:
+                val = getattr(obj, attr)
+                result[attr] = str(val)
+            except Exception as e:
+                result[attr] = f"<Error: {e}>"
+        return f"{name}:\n" + json.dumps(result, indent=2)
+
     return {
         "statusCode": 200,
-        "body": "Hello from OpenFaaS!"
-        "Input event: {}".format(event)
-        "Input context: {}".format(context)
+        "body": (
+            f"Python version: {version}\n\n"
+            f"{inspect_object(event, 'Event')}\n\n"
+            f"{inspect_object(context, 'Context')}"
+        )
     }
 ```
 
@@ -211,11 +230,19 @@ functions:
 
 The main fields we want to study here are:
 
+- `gateway`: edit the port accordingly if needed
 - `lang`: The name of the template to build with.
 - `handler`: The folder (not the file) where the handler code is to be found.
-- `image`:  The Docker image name to build with its appropriate prefix for use with docker build / push. It is recommended that you change the tag on each change of your code, but you can also leave it as latest.
+- `image`:  The Docker image name to build with its appropriate prefix for use with docker build / push, more information below. It is recommended that you change the tag on each change of your code, but you can also leave it as latest.
 
 You can largely ignore the `provider` fields, which are optional, but they do allow you to hard-code an alternative gateway address other than the default.
+
+The community version of OpenFaaS that we use only supports public images, so you'll need to publish your image to a place like dockerhub. For that, you should create an account at `https://hub.docker.com/` then, you replace `yourRegistryPrefixWillBeHere` in `stack.yaml` with your username from dockerhub. You then will need to log in to dockerhub with the following.
+
+```
+docker login --username <your username here> --password <your password here>
+```
+
 
 Now, there are three parts to getting your function up and running both initially and for updating. Run the following from the folder where `stack.yaml` is located:
 
@@ -226,12 +253,12 @@ Now, there are three parts to getting your function up and running both initiall
 All of those commands can be combined with the `faas-cli up` command for brevity both initially and for updating.
 
 ```
-$ faas-cli up -f facesdetection-python.yml
+$ faas-cli up -f stack.yaml
 ```
 
 Wait a few moments, and then you will see a URL printed `http://127.0.0.1:8080/function/facesdetection-python`
 
-That’s it! You can now invoke your function using the UI, curl, your own separate application code, or the faas-cli. The curl command is as follows:
+That’s it! You can now invoke your function using the UI, curl, your own separate application code, or the faas-cli. The curl command is as follows (you may need to adjust the port):
 
 ```
 $ curl --data "Hello!" http://127.0.0.1:8080/function/facesdetection-python 
@@ -256,7 +283,7 @@ def function(input_URL)
   return imagefaces or save_image(output_URL)  
 ```
 
-This is an example of code that detects faces using a pretrained classifier called `haarcascade_frontalface_default.xml` from the [OpenCV project](https://github.com/opencv/opencv/tree/4.x/data/haarcascades):
+The following is an example of code that detects faces using a pretrained classifier called `haarcascade_frontalface_default.xml` from the [OpenCV project](https://github.com/opencv/opencv/tree/4.x/data/haarcascades):
 
 ```
 import cv2
@@ -276,7 +303,7 @@ for (x, y, w, h) in faces:
 cv2.imshow('img', img)
 ```
 
-**You should adapt this code so it takes the URL of an image, preforms the face detection on the image and the result is sent to the user or saved in the service so that it can be downloaded or viewed. Any modification to improve this code and the face detection precision will be taken into account for the evaluation of the assignment.** 
+**You should adapt this code so it takes the URL of an image, performs the face detection on the image and the result is sent to the user or saved in the service so that it can be downloaded or viewed. Any modification to improve this code and the face detection precision will be taken into account for the evaluation of the assignment.** 
 
 ## Alternatives to Face Recognition
 
