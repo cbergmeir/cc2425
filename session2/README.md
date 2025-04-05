@@ -463,7 +463,7 @@ Commands to use for the Dockerfile:
 
 - `ENV` – Sets environment variables.
 
-Firstly, let’s create a Dockerfile (you can same this under the name `mydockerfile`, e.g., using vim):
+Firstly, let’s create a Dockerfile (you can save this under the name `mydockerfile`, e.g., using vim):
 
 ```
 FROM rockylinux:8
