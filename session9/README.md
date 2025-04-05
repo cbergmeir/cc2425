@@ -338,18 +338,18 @@ hdfs dfs -getmerge /user/your-username/ merged.txt
 - Finally, merge folder /train/p2 and store as data_merged.txt
 
 
-# References:
+## References:
 
 - http://www.glennklockwood.com/data-intensive/hadoop/overview.html
 
 
-## Working with Hadoop Map-Reduce
+# Working with Hadoop Map-Reduce
 
 The provided examples are written in Java code for Hadoop version: 2.9.3. For [examples in python, go to these references](#word-count-example-for-hadoop-in-python)
 
-### Structure of M/R code
+## Structure of M/R code
 
-#### Mapper
+### Mapper
 
 Maps input key/value pairs to a set of intermediate key/value pairs.
 Maps are the individual tasks which transform input records into a intermediate records. The transformed intermediate records need not be of the same type as the input records. A given input pair may map to zero or many output pairs.
@@ -373,7 +373,7 @@ public class TokenCounterMapper
  }
 ```
 
-#### Reducer
+### Reducer
 
 Reduces a set of intermediate values which share a key to a smaller set of values.
 
@@ -403,7 +403,7 @@ public class IntSumReducer<Key> extends Reducer<Key,IntWritable,
  
 ```
 
-#### Main
+### Main
 
 Main function considering Map and Reduce objects and additional data for the job.
 
@@ -423,7 +423,7 @@ Main function considering Map and Reduce objects and additional data for the job
 ...
 ```
 
-### Word Count example
+## Word Count example
 
 Full example of Word Count for Hadoop 2.9.3. Copy the code and save it to your local path as `WordCount.java`.
 
@@ -494,7 +494,7 @@ public class WordCount {
 ```
 
 
-### Running Hadoop applications
+## Running Hadoop applications
 
 
 In your home folder, first, create the `wordcount_classes` folder:
@@ -539,7 +539,7 @@ hadoop jar WordCount.jar WordCount /user/CCSA2223/<yourID>/<yourFile>  /user/CCS
 
 
 
-### Results 
+## Results 
 
 Check output folder with:
 
@@ -563,7 +563,7 @@ hdfs dfs -cat /user/your-username/<folder>/part-r-00000
 
 
 
-### Calculate MIN of a row in Hadoop
+## Calculate MIN of a row in Hadoop
 
 Mapper:
 
@@ -632,7 +632,7 @@ Main (old version):
   }
 ```
 
-### Compile MIN in Hadoop
+## Compile MIN in Hadoop
 
 First, create classes folder:
 
@@ -681,7 +681,7 @@ hdfs dfs -cat /user/CCSA2223/<yourID>/<folder>/part-....
 
 
 
-# Word Count example for Hadoop in Python:
+## Word Count example for Hadoop in Python:
 
 For python Map-Reduce implementations of the word count example, please check the following references: 
 
