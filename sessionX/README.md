@@ -70,7 +70,7 @@ df.where("age > 21").select("name.first").show()
 - Un motor unificado: Spark viene empaquetado con bibliotecas de nivel superior, incluyendo soporte para consultas SQL, transmisión de datos, aprendizaje automático y procesamiento de gráficos. Estas bibliotecas estándar aumentan la productividad de los desarrolladores y pueden combinarse perfectamente para crear flujos de trabajo complejos.
 - Funciona en cualquier plataforma: Tiene soporte para HDFS Hadoop, Apache Mesos, Kubernetes, Cassandra, Hbase, etc.
 
-Para la ejecución de aplicaciones de Python/R/Scala en Spark sobre hadoop.ugr.es necesitamos contar con los siguientes elementos: 
+Para la ejecución de aplicaciones de Python/R/Scala en Spark necesitamos contar con los siguientes elementos: 
 
 ## Spark context
 

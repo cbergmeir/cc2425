@@ -34,15 +34,11 @@
 
 ## Session 6
 
-Introduction to MongoDB
-
-- [MongoDB](./session6/README.md)
+- [Introduction to MongoDB](./session6/README.md)
 
 ## Session 7
 
-Introduction to FaaS
-
-- [FaaS](./session7/README.md)
+- [Introduction to FaaS](./session7/README.md)
 
 ## Session 9
 
@@ -51,4 +47,5 @@ Introduction to FaaS
 
 ## Session 10 and 11
 
-- [Introduction to Spark and MLlib](./session10/README.md)
+- [Introduction to Spark and MLlib](./sessionX/README.md)
+
