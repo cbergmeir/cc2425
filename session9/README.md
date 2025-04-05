@@ -1,4 +1,4 @@
-# HDFS, Hadoop and Spark
+# Session 9, 10, 11: HDFS, Hadoop and Spark
 
 Original texts by Manuel Parra: manuelparra@decsai.ugr.es and José Manuel Benítez: j.m.benitez@decsai.ugr.es
 
@@ -13,7 +13,7 @@ Content:
     + [HDFS basics](#hdfs-basics)
     + [HDFS storage space](#hdfs-storage-space)
     + [Usage HDFS](#usage-hdfs)
-  * [Exercice](#exercice)
+  * [Exercises](#exercises)
 - [Working with Hadoop Map-Reduce](#working-with-hadoop-map-reduce)
     + [Structure of M/R code](#structure-of-m-r-code)
       - [Mapper](#mapper)
@@ -56,7 +56,20 @@ Content:
     + [First example](#first-example)
 -->
 
-## How to connect
+
+# Introduction to Hadoop
+
+Hadoop is an open-source framework developed by the Apache Software Foundation that enables the distributed processing of large datasets across clusters of computers using simple programming models. It is designed to scale up from a single server to thousands of machines, each offering local computation and storage. At its core, Hadoop is built to handle vast amounts of data in a fault-tolerant, reliable, and cost-effective way, making it particularly well-suited for big data applications.
+
+The Hadoop ecosystem is composed of several key modules. The two primary ones are the **Hadoop Distributed File System (HDFS)**, which provides high-throughput access to data, and **MapReduce**, a programming model for parallel data processing. HDFS stores data in large blocks spread across multiple nodes, ensuring redundancy and availability. MapReduce, on the other hand, processes data in parallel by dividing tasks into "map" and "reduce" functions.
+
+Beyond its core components, Hadoop includes a rich ecosystem of tools and frameworks, such as Hive (for SQL-like querying), Pig (for data transformation), and YARN (for resource management). With its ability to process massive volumes of structured and unstructured data, Hadoop has become a foundational technology in many industries.
+
+# Setting up Hadoop and connecting
+
+## How to connect to hadoop.ugr.es (NOT READY YET, CANNOT BE USED CURRENTLY)
+
+Hadoop.ugr.es is a computing infrastructure or cluster with 15 nodes and a header node containing the data processing platforms Hadoop and Spark and their libraries for Data Mining and Machine Learning (Mahout and MLLib). It also has HDFS installed for working with distributed data. To connect to it you can follow these steps:
 
 From linux/MacOs machines: 
 
@@ -73,9 +86,55 @@ Download link: https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
 - Port: ``22``
 - Click "Open" -> Write your login credentials and password.
 
-## What is hadoop.ugr.es
+## Setting up a hadoop test install locally or on our current server with docker
 
-Hadoop.ugr.es is a computing infrastructure or cluster with 15 nodes and a header node containing the data processing platforms Hadoop and Spark and their libraries for Data Mining and Machine Learning (Mahout and MLLib). It also has HDFS installed for working with distributed data. 
+CURRENTLY THIS IS THE ONLY WAY TO RUN IT.
+
+You can set up a test install of Hadoop locally or on the server we have been using so far, with the following `docker.compose.yaml`.
+
+```
+services:
+  namenode:
+    image: docker.io/bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    ports:
+      - "9870:9870"  # HDFS Web UI
+    environment:
+      - CLUSTER_NAME=test
+      - HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check=false
+    volumes:
+      - namenode:/hadoop/dfs/name
+
+  datanode:
+    image: docker.io/bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    ports:
+      - "9864:9864"  # DataNode Web UI
+    environment:
+      - CLUSTER_NAME=test
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+    volumes:
+      - datanode:/hadoop/dfs/data
+    depends_on:
+      - namenode
+
+volumes:
+  namenode:
+  datanode:  
+```
+
+If you are working on our server, you'll have to edit the `ports` sections to map the ports 9870 and 9864 to ports you have been assigned. 
+
+As a reminder, you can then start everything with
+```bash
+docker compose up -d
+```
+
+You can then check if things are running correctly by connecting with a web browser to the following URLs:
+
+- **HDFS NameNode UI**: [http://localhost:9870](http://localhost:9870)
+- **DataNode UI**: [http://localhost:9864](http://localhost:9864)
+
 
 
 # Working with HDFS
@@ -98,9 +157,9 @@ HDFS is designed to reliably store very large files across machines in a large c
 ![DataNodes](https://hadoop.apache.org/docs/r1.2.1/images/hdfsdatanodes.gif)
 
 
+## Connecting to the HDFS of your cluster
 
-
-## Connecting to Hadoop Cluster UGR
+### Connecting to Hadoop Cluster UGR (NOT READY YET, CANNOT BE USED CURRENTLY)
 
 Log in hadoop ugr server with your credentials:
 
@@ -114,6 +173,25 @@ or in ulises server with your credentials:
 ssh xxusername@ulises...
 ```
 you will also need a password from your teacher. 
+
+### Connecting to the local emulation
+
+CURRENTLY THIS IS THE ONLY WAY TO RUN IT.
+
+Connect to a shell in your docker container with the following command.
+
+```bash
+docker exec -it namenode bash
+```
+
+Now we'll need to create a folder structure as follows:
+
+```
+hdfs dfs -mkdir /user
+hdfs dfs -mkdir /user/CCSA2425/
+hdfs dfs -mkdir /user/CCSA2425/mcc50600265
+```
+
 
 ## HDFS basics
 
@@ -131,13 +209,13 @@ The management of the files in HDFS works in a different way of the files of the
 Each user has in HDFS a folder in ``/user/`` with the username, for example for the user with login mcc50600265 in HDFS have:
 
 ```
-/user/CCSA2223/mcc50600265/
+/user/CCSA2425/mcc50600265/
 ```
 
-Attention!! The HDFS storage space is different from the user's local storage space in hadoop.ugr.es
+Attention! The HDFS storage space is different from the user's local storage space in hadoop.ugr.es
 
 ```
-/user/CCSA2223/mcc50600265/  NOT EQUAL /home/mcc506000265/
+/user/CCSA2425/mcc50600265/  NOT EQUAL /home/mcc506000265/
 ```
 
 For ulises, the HDFS folder is located in: 
@@ -169,13 +247,13 @@ Options are (simplified):
 List the content of a HDFS folder:
 
 ```
-hdfs dfs -ls /user/CCSA2223/ccano
+hdfs dfs -ls /user/CCSA2425/mcc50600265
 ```
 
 Create a test file:
 
 ```
-echo “HOLA HDFS” > fichero.txt
+echo "HOLA HDFS" > fichero.txt
 ```
 
 Move the local file ``fichero.txt`` to HDFS:
@@ -190,7 +268,7 @@ List again your folder:
 hdfs dfs -ls /user/your-username
 ```
 
-Create a folder test`:
+Create a folder `test`:
 
 ```
 hdfs dfs -mkdir /user/your-username/test
@@ -223,11 +301,11 @@ hdfs dfs -rmdir /user/your-username/test
 Create two files:
 
 ```
-echo “HOLA HDFS 1” > f1.txt
+echo "HOLA HDFS 1" > f1.txt
 ```
 
 ```
-echo “HOLA HDFS 2” > f2.txt
+echo "HOLA HDFS 2" > f2.txt
 ```
 
 Store in HDFS:
@@ -240,24 +318,24 @@ hdfs dfs -put f1.txt /user/your-username/.
 hdfs dfs -put f2.txt /user/your-username/.
 ```
 
-Cocatenate both files:
+Concatenate both files:
 
 ```
 hdfs dfs -getmerge /user/your-username/ merged.txt
 ```
 
-## Exercice
+## Exercises
 
 - Create 5 files in your local account with the following names:
-  - part1.dat ,part2.dat, part3.dat, part4.dat, part5.dat
+  - part1.dat, part2.dat, part3.dat, part4.dat, part5.dat
 - Copy files to HDFS
 - Create the following HDFS folder structure:
   - /test/p1/
   - /train/p1/
   - /train/p2/
 - Copy part1 in /test/p1/ and part2 in /train/p2/ 
-- Move part3, and part4 to /train/p1/
-- Finally merge folder /train/p2 and store as data_merged.txt
+- Move part3 and part4 to /train/p1/
+- Finally, merge folder /train/p2 and store as data_merged.txt
 
 
 # References:
