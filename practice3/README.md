@@ -1,3 +1,16 @@
+# Práctica 3
+
+Tabla de contenido:
+
+* [Objetivos de la práctica](#objetivos-de-la-práctica)
+* [Recursos disponibles](#recursos-disponibles)
+* [Descripción de la práctica](#descripción-de-la-práctica)
+* [Ejemplo de plantilla para la práctica 3](#ejemplo-de-plantilla-para-la-práctica-3)
+* [Entrega y evaluación de la práctica](#entrega-y-evaluación-de-la-práctica)
+   * [Instrucciones de entrega](#instrucciones-de-entrega)
+   * [Criterios de evaluación](#criterios-de-evaluación)
+   * [Plazos de entrega](#plazos-de-entrega)
+   * [Defensa de la práctica](#defensa-de-la-práctica)
 
 # Objetivos de la práctica
 
@@ -16,11 +29,11 @@ y aplicación de técnicas de Minería de Datos para la extracción de conocimie
 Los recursos que se proporcionan al alumnado para abordar la práctica están recopilados
 en [Sesión 9](../session9) y [Sesión 10 y 11](../sessionX):
 
-- HDFS [Sesión 9](../session9)
+- HDFS: [Sesión 9](../session9)
 	- Manejo y gestión de ficheros en HDFS vs. Local
 	- Operaciones básicas para el trabajo con ficheros en HDFS.
 
-- Plataforma SPARK [Sesión 10 y 11](../sessionX)
+- Plataforma Spark: [Sesión 10 y 11](../sessionX)
 	- Spark submit y PySpark
 	- Spark Shell (para Python, Scala y R).
 	- DataFrames y el uso/gestión de SparkDataFrames. Componentes del framework
@@ -49,7 +62,7 @@ para identificar cuál resulta ser el más adecuado para el problema en cuestió
 un estudio empírico comparativo.
 
 El problema a considerar es la realización de distintas tareas de análisis de datos sobre un conjunto de datos concreto. Más concretamente, el conjunto define un problema de
-clasificación y se trata de construir varios clasificadores que los resuelvan. **TODO Está disponible en el directorio de HDFS que se especifica en el mensaje de PRADO que acompaña a esta memoria.**
+clasificación y se trata de construir varios clasificadores que los resuelvan. **Se os va a mandar un mensaje en PRADO especificando el problema y dónde conseguir los datos.**
 
 Para la realización de las tareas es necesario tener en cuenta las siguientes indicaciones:
 

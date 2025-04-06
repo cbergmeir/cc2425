@@ -4,7 +4,7 @@ Textos originales de Manuel Parra: manuelparra@decsai.ugr.es y José Manuel Ben�
 
 Con contribuciones de Carlos Cano: carloscano@ugr.es
 
-Tabla de contenido::
+Tabla de contenido:
 
 * [Introducción a Spark](#introducción-a-spark)
 * [Spark context](#spark-context)
