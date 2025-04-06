@@ -1,10 +1,10 @@
 # Session 10, 11: Spark y Práctica 3
 
-textos originales de Manuel Parra: manuelparra@decsai.ugr.es and José Manuel Benítez: j.m.benitez@decsai.ugr.es
+Textos originales de Manuel Parra: manuelparra@decsai.ugr.es y José Manuel Benítez: j.m.benitez@decsai.ugr.es
 
 Con contribuciones de Carlos Cano: carloscano@ugr.es
 
-Contenido:
+Tabla de contenido::
 
 * [Introducción a Spark](#introducción-a-spark)
 * [Spark context](#spark-context)
@@ -138,7 +138,7 @@ USER 1001
 
 ```
 
-**Si trabajas subre el servidor de prácticas tienes que cambiar los puertos de la instalación a puertos que tienes asignado**
+**Si trabajas sobre el servidor de prácticas tienes que cambiar los puertos de la instalación a puertos que tienes asignado.**
 
 Luego, te puedes conectar con `docker exec -it spark bash`
 
@@ -447,7 +447,27 @@ sqlDF.show()
 Desempolva tus habilidades con SQL para hacer las consultas que desees sobre el conjunto de datos y guardar los resultados en el DataFrame correspondiente. 
 
 ## MLlib
- MLlib es la biblioteca de Machine Learning sobre Spark. Puedes ver si todo está instalado correctamente con un ejemplo sencillo como lo siguiente:
+
+Dentro del ecosistema cabe destacar MLlib, que es la biblioteca de Machine Learning sobre Spark y contiene muchos algoritmos y utilidades para Big Data:
+
+- Clasificación: regresión logística, Bayes ingenuo, ...
+- Regresión: regresión lineal generalizada, regresión de supervivencia, ...
+- Árboles de decisión, bosques aleatorios y árboles con gradientes
+- Recomendación: alternar los mínimos cuadrados (ALS)
+- Agrupación: Medios K, mezclas gaussianas (GMM), ...
+- Modelización de temas: asignación de LDA...
+- Conjuntos de elementos frecuentes, reglas de asociación y minería de patrones
+secuenciales
+
+Además, Spark tiene utilidades de flujo de trabajo de ML que incluyen:
+- Transformaciones de características: estandarización, normalización, hashing, etc.
+- Construcción de pipes en ML.
+- Evaluación de modelos y ajuste de hiper parámetros.
+- Persistencia del ML. 
+
+![MLlib architecture](MLlib.png)
+
+Puedes ver si todo está instalado correctamente con un ejemplo sencillo como lo siguiente:
  
 ```python
 from pyspark.ml.classification import LogisticRegression
