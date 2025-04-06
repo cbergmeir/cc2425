@@ -1,62 +1,31 @@
 # Session 10, 11: Spark y Práctica 3
 
-Original texts by Manuel Parra: manuelparra@decsai.ugr.es and José Manuel Benítez: j.m.benitez@decsai.ugr.es
+textos originales de Manuel Parra: manuelparra@decsai.ugr.es and José Manuel Benítez: j.m.benitez@decsai.ugr.es
 
-With contributions by Carlos Cano: carloscano@ugr.es
+Con contribuciones de Carlos Cano: carloscano@ugr.es
 
-Content:
+Contenido:
 
-- [HDFS, Hadoop](#workshop-material-for-hdfs--hadoop-and-spark)
-  * [How to connect](#how-to-connect)
-  * [What is hadoop.ugr.es](#what-is-hadoopugres)
-  * [Working with HDFS](#working-with-hdfs)
-    + [HDFS basics](#hdfs-basics)
-    + [HDFS storage space](#hdfs-storage-space)
-    + [Usage HDFS](#usage-hdfs)
-  * [Exercises](#exercises)
-- [Working with Hadoop Map-Reduce](#working-with-hadoop-map-reduce)
-    + [Structure of M/R code](#structure-of-m-r-code)
-      - [Mapper](#mapper)
-      - [Reducer](#reducer)
-      - [Main](#main)
-    + [Word Count example](#word-count-example)
-    + [WordCount example file](#wordcount-example-file)
-    + [Running Hadoop applications](#running-hadoop-applications)
-    + [Results](#results)
-    + [Datasets](#datasets)
-    + [Calculate MIN of a row in Hadoop](#calculate-min-of-a-row-in-hadoop)
-    + [Compile MIN in Hadoop](#compile-min-in-hadoop)
-    + [Word count example for Hadoop in Python](#word-count-example-for-hadoop-in-python)
-- [Spark](#sparkr)
-    + [Spark Context](#Spark-context)
-    + [Ejecución](#Ejecución-en-modo-local,-standalone-o-YARN)
-    + [Enviar un trabajo al cluster](#enviar-un-trabajo-al-cluster)
-    + [PySpark, o como utilizar Spark desde Python](#PySpark-o-como-utilizar-Spark-desde-Python)
-    + [Consola interactiva PySpark](#consola-interactiva-PySpark)
-    + [Trabajo con RDDs / SparkDataFrames](#Trabajo-con-RDDs-/-SparkDataFrames)
-    + [Carga de datos desde csv](#Carga-de-datos-desde-csv)
-    + [Manipulación de los datos con SparkSQL](#Manipulación-de-los-datos-con-SparkSQL)
-    + [Ejemplo de plantilla para la práctica 3](#Ejemplo-de-plantilla-para-la-práctica-3)
-<!--
-  * [How to connect](#how-to-connect-1)
-  * [Start R shell for Spark](#start-r-shell-for-spark)
-  * [Create the Spark Environment](#create-the-spark-environment)
-  * [Close the Spark Session](#close-the-spark-session)
-  * [Spark Session parameters](#spark-session-parameters)
-  * [Creating SparkDataFrames](#creating-sparkdataframes)
-    + [From local data frames](#from-local-data-frames)
-    + [From Data Sources](#from-data-sources)
-    + [How to read/write from/to hdfs](#how-to-read-write-from-to-hdfs)
-  * [SparkDataFrame Operations](#sparkdataframe-operations)
-  * [Grouping and Aggregation](#grouping-and-aggregation)
-  * [Operating on Columns](#operating-on-columns)
-  * [SparkSQL](#sparksql)
-  * [Machine learning](#machine-learning)
-  * [Let see some examples](#let-see-some-examples)
-    + [First example](#first-example)
--->
+* [Introducción a Spark](#introducción-a-spark)
+* [Spark context](#spark-context)
+* [Ejecución en modo local, standalone o YARN](#ejecución-en-modo-local-standalone-o-yarn)
+   * [Instalación de un entorno de prueba sencillo](#instalación-de-un-entorno-de-prueba-sencillo)
+* [Trabajar con Spark](#trabajar-con-spark)
+   * [Enviar un trabajo al cluster](#enviar-un-trabajo-al-cluster)
+   * [PySpark, o como utilizar Spark desde Python](#pyspark-o-como-utilizar-spark-desde-python)
+      * [En hadoop.ugr.es (NO LO USAMOS DE MOMENTO)](#en-hadoopugres-no-lo-usamos-de-momento)
+      * [En local o en el servidor de prácticas](#en-local-o-en-el-servidor-de-prácticas)
+      * [En hadoop.ugr.es (NO LO USAMOS DE MOMENTO)](#en-hadoopugres-no-lo-usamos-de-momento-1)
+      * [En local o en el servidor de prácticas](#en-local-o-en-el-servidor-de-prácticas-1)
+   * [Consola interactiva PySpark](#consola-interactiva-pyspark)
+   * [Trabajo con RDDs / SparkDataFrames](#trabajo-con-rdds--sparkdataframes)
+   * [Carga de datos desde CSV](#carga-de-datos-desde-csv)
+   * [Manipulación de los datos con SparkSQL](#manipulación-de-los-datos-con-sparksql)
+   * [MLlib](#mllib)
+* [Referencias](#referencias)
 
-# Spark
+
+# Introducción a Spark
 
 Desde su lanzamiento, Apache Spark ha sido adoptado rápidamente por empresas de una amplia gama de industrias y prácticamente se ha convertido en el estándar de-facto para el procesamiento de datos de gran volumen. Empresas de Internet tan conocidas como Netflix, Yahoo y eBay han desplegado Spark a escala masiva, procesando colectivamente múltiples petabytes de datos en clusters de más de 8.000 nodos. Se ha convertido rápidamente en la mayor comunidad de código abierto en Big Data, con más de 1.000 colaboradores de más de 250 organizaciones.
 
@@ -72,7 +41,7 @@ df.where("age > 21").select("name.first").show()
 
 Para la ejecución de aplicaciones de Python/R/Scala en Spark necesitamos contar con los siguientes elementos: 
 
-## Spark context
+# Spark context
 
 Punto de entrada principal para la funcionalidad de Spark. Un SparkContext representa la conexión a un cluster de Spark, y puede ser usado para crear RDDs, acumuladores y variables en ese cluster. El SparkContext se define dentro de un script, por ejemplo, el siguiente código en python : 
 ```
@@ -89,9 +58,91 @@ En este caso `sc` representa un Spark context de una shell Spark ejecutando como
 
 ![Spark architecture](spark.png)
 
-## Ejecución en modo local, standalone o YARN
+# Ejecución en modo local, standalone o YARN
 
 Para que Spark funcione necesita recursos. En el modo autónomo (standalone) se inician los workers y el maestro de Spark y la capa de almacenamiento puede ser cualquiera --- HDFS, Sistema de Archivos, Cassandra etc. En el modo YARN se pide al clúster YARN-Hadoop que administre la asignación de recursos y la gestión del mismo resulta más eficiente. En el modo local todas las tareas relacionadas con el trabajo de Spark se ejecutan en la misma JVM. 
+
+## Instalación de un entorno de prueba sencillo
+
+En local o en el servidor de prácticas puedes instalar un entorno sencillo con docker. Usamos la configuración de HDFS que ya hemos visto en la [Sesión 9](../session9) y añadimos un contenedor de Spark al que instalamos un Python. El fichero `docker-compose.yaml` que vamos a usar es el siguiente:
+
+```
+services:
+  namenode:
+    image: docker.io/bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    hostname: namenode
+    ports:
+      - "9870:9870"
+    environment:
+      - CLUSTER_NAME=test
+      - HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check=false
+    volumes:
+      - namenode:/hadoop/dfs/name
+      - ~/data:/data  # Host path : Container path
+    networks:
+      - hadoop
+
+  datanode:
+    image: docker.io/bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    hostname: datanode
+    ports:
+      - "9864:9864"
+    environment:
+      - CLUSTER_NAME=test
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+    volumes:
+      - datanode:/hadoop/dfs/data
+    depends_on:
+      - namenode
+    networks:
+      - hadoop
+
+  spark:
+    # Build our custom Python-enabled Spark image
+    build: ./spark  # The folder containing your Dockerfile (FROM bitnami/spark...)
+    container_name: spark
+    # Provide any environment configs Spark might need to locate HDFS
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+    # We let this container spin up so we can exec in
+    depends_on:
+      - namenode
+      - datanode
+
+volumes:
+  namenode:
+  datanode:
+
+networks:
+  hadoop:  
+```
+
+Y el fichero Dockerfile (dentro de una carpeta que llamamos `spark`), es el siguiente:
+
+```
+FROM docker.io/bitnami/spark:3.3.0
+
+USER root
+RUN apt-get update && apt-get install -y python3 python3-pip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# (Optional) Ensure pyspark is installed if needed. In many cases, Spark's PySpark is already included,
+# but if you need a specific version or extra Python packages, do so here:
+# RUN pip3 install pyspark==3.3.0
+
+RUN pip3 install numpy
+
+USER 1001
+
+```
+
+**Si trabajas subre el servidor de prácticas tienes que cambiar los puertos de la instalación a puertos que tienes asignado**
+
+Luego, te puedes conectar con `docker exec -it spark bash`
+
+# Trabajar con Spark
 
 ## Enviar un trabajo al cluster
 
@@ -112,10 +163,14 @@ Os proponemos ahora un ejemplo práctico en Python utilizando la biblioteca PySp
 
 Para un primer ejemplo, os proponemos seguir los siguientes pasos: 
 
-1.- Descargamos un conjunto de datos en nuestra cuenta:
+1.- Descargamos un conjunto de datos (en nuestra cuenta, fuera de los contenedores):
 ```
 wget https://raw.githubusercontent.com/mattf/joyce/master/james-joyce-ulysses.txt 
 ```
+
+2. Mover el fichero al contenedor `namenode`:
+
+El `namenode` tiene una carpeta `/data` que se monta desde `~/data`
 
 2.- Mover el fichero a hdfs:
 ```
@@ -165,6 +220,7 @@ wordCounts.saveAsTextFile(output_folder)
 	
 4.- Editar el código fuente del programa y modificar los datos de entrada (`input_file`) y salida (`output_folder`) sobre HDFS. En cada ejecución será siempre obligatorio actualizar el directorio de salida ya que Spark por defecto no sobrescribe resultados y el proceso termina en error cuando lo intenta.
 
+### En hadoop.ugr.es (NO LO USAMOS DE MOMENTO)
 Si tus datos de entrada y tu carpeta de salida están en HDFS en ulises.ugr.es, debes especificar la ruta a los datos utilizando los siguientes nombres de dominio: 
 ```
   input_file = "hdfs://ulises.imuds.es:8020/user/your-username/james-joyce-ulysses.txt"
@@ -172,9 +228,19 @@ Si tus datos de entrada y tu carpeta de salida están en HDFS en ulises.ugr.es, 
 ```
 El nombre de dominio `ulises.imuds.es` (o IP `192.168.3.100`) es el nombre (y la IP) del servidor HDFS en la red interna del cluster. 
 
+### En local o en el servidor de prácticas
+
+Debes especificar la ruta a los datos utilizando los siguientes nombres de dominio: 
+```
+  input_file = "hdfs://namenode:8020/user/your-username/james-joyce-ulysses.txt"
+  output_folder = "hdfs://namenode:8020/user/your-username/wc_joyce/"
+```
+
 5.- Enviar el programa a ejecución.
 
 Para enviar el programa a ejecución debemos invocar el comando `spark-submit` tal y como se describe en [Enviar un trabajo al cluster](#enviar-un-trabajo-al-cluster). Para ello, debemos conocer la ruta al binario `spark-submit` y la URL del master del cluster Spark. Dependiendo de la máquina en la que ejecutemos los comandos, estos parámetros varían: 
+
+### En hadoop.ugr.es (NO LO USAMOS DE MOMENTO)
 
 Desde ulises.ugr.es:
 ```
@@ -186,6 +252,17 @@ Desde hadoop.ugr.es:
 /opt/spark-2.2.0/bin/spark-submit --master spark://hadoop-master:7077 --total-executor-cores 5 --executor-memory 1g wordcount.py
 
 ```
+
+### En local o en el servidor de prácticas
+
+Conectarse al contenedor de spark: `docker exec -it spark bash`, y luego ejecutar:
+
+TODO: CHEQUEAR.
+
+```
+spark-submit --master spark://namenode:7077 --total-executor-cores 5 --executor-memory 1g wordcount.py
+```
+
 6.- ¿Dónde están los resultados?
 Los resultados de la ejecución están dentro de la carpeta HDFS destino que se ha indicado en `saveAsTextFile()`. Al ver los ficheros generados usando: 
 
@@ -255,6 +332,24 @@ Desde hadoop.ugr.es:
 Desde ulises.ugr.es: 
 ```
 $ pyspark
+```
+
+Desde local o el servidor de prácticas:
+
+```
+docker exec -it spark bash
+pyspark
+```
+
+O directamente:
+
+```
+docker exec -it spark pyspark
+```
+
+Lo que debemos ver es lo siguiente:
+
+```
 Python 2.7.17 (default, Mar  8 2023, 18:40:28) 
 [GCC 7.5.0] on linux2
 Type "help", "copyright", "credits" or "license" for more information.
@@ -313,10 +408,9 @@ Para aprender a manejar Dataframes y RDDS en PySpark podemos consultar los manua
 - Dataframes: https://mybinder.org/v2/gh/apache/spark/bf45fad170?filepath=python%2Fdocs%2Fsource%2Fgetting_started%2Fquickstart_df.ipynb
 - RDDs: https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.html#pyspark.RDD
 
-También es importante matizar que, tal y como se especifica en la documentación de PySpark: 
-```
-Note that the RDD API is a low-level API which can be difficult to use and you do not get the benefit of Spark’s automatic query optimization capabilities. We recommend using DataFrames instead of RDDs as it allows you to express what you want more easily and lets Spark automatically construct the most efficient query for you.
-```
+También es importante matizar que, tal y como se especifica en la documentación de PySpark:
+ 
+> Note that the RDD API is a low-level API which can be difficult to use and you do not get the benefit of Spark’s automatic query optimization capabilities. We recommend using DataFrames instead of RDDs as it allows you to express what you want more easily and lets Spark automatically construct the most efficient query for you.
 
 Es decir, PySpark recomienda el uso de APIs de usuario/programadores sobre Dataframes en lugar de RDDs, ya que Spark puede representar los dataframes en los RDDs mejor optimizados y dejando el uso explícito de RDDs para usuarios expertos. Es por esto que para la biblioteca de referencia en Machine Learning sobre Spark, MLlib, se recomienda directamente el uso de Dataframes: 
 https://spark.apache.org/docs/latest/ml-guide.html
@@ -328,7 +422,7 @@ Descarga este dataset de COVID-19:
 ```
 wget https://opendata.ecdc.europa.eu/covid19/casedistribution/csv/
 ```
-cámbiale el nombre a covid19.csv y muévelo a HDFS.
+cámbiale el nombre a `covid19.csv` y muévelo a HDFS.
 
 Para cargar como un CSV dentro de SPARK como un DataFrame
 ```
@@ -353,7 +447,36 @@ sqlDF.show()
 Desempolva tus habilidades con SQL para hacer las consultas que desees sobre el conjunto de datos y guardar los resultados en el DataFrame correspondiente. 
 
 ## MLlib
- MLlib es la biblioteca de Machine Learning sobre Spark. Puedes consultar la documentación: 
+ MLlib es la biblioteca de Machine Learning sobre Spark. Puedes ver si todo está instalado correctamente con un ejemplo sencillo como lo siguiente:
+ 
+```python
+from pyspark.ml.classification import LogisticRegression
+from pyspark.ml.linalg import Vectors
+from pyspark.sql import Row
+
+# Create SparkSession
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.getOrCreate()
+
+# Properly format data with Vectors
+data = [
+    Row(label=0.0, features=Vectors.dense([0.0, 1.1, 0.1])),
+    Row(label=1.0, features=Vectors.dense([2.0, 1.0, -1.0])),
+    Row(label=0.0, features=Vectors.dense([2.0, 1.3, 1.0])),
+    Row(label=1.0, features=Vectors.dense([0.0, 1.2, -0.5]))
+]
+df = spark.createDataFrame(data)
+
+# Train model
+lr = LogisticRegression(maxIter=10, regParam=0.01)
+model = lr.fit(df)
+
+# Predict
+result = model.transform(df)
+result.select("features", "label", "prediction").show()
+```
+
+Luego, puedes consultar la documentación para ver ejemplos más complejos: 
  - MLlib: https://spark.apache.org/docs/latest/ml-guide.html
  - MLlib desde PySpark: https://spark.apache.org/docs/latest/api/python/reference/pyspark.ml.html
 
