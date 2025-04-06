@@ -1,4 +1,4 @@
-# Session 10, 11: Spark y Práctica 3
+# Session 10, 11: Spark y MLlib
 
 Textos originales de Manuel Parra: manuelparra@decsai.ugr.es y José Manuel Benítez: j.m.benitez@decsai.ugr.es
 
@@ -467,7 +467,7 @@ Además, Spark tiene utilidades de flujo de trabajo de ML que incluyen:
 
 ![MLlib architecture](MLlib.png)
 
-Puedes ver si todo está instalado correctamente con un ejemplo sencillo como lo siguiente:
+Puedes ver si todo está instalado correctamente con un ejemplo sencillo como el siguiente:
  
 ```python
 from pyspark.ml.classification import LogisticRegression
