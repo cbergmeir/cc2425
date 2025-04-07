@@ -64,7 +64,7 @@ Download link: https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
 
 CURRENTLY THIS IS THE ONLY WAY TO RUN IT.
 
-You can set up a test install of Hadoop locally or on the server we have been using so far, with the following `docker.compose.yaml`.
+You can set up a test install of Hadoop locally or on the server we have been using so far, with the following `docker-compose.yaml`.
 
 ```
 services:
@@ -163,7 +163,8 @@ Now we'll need to create a folder structure as follows:
 ```
 hdfs dfs -mkdir /user
 hdfs dfs -mkdir /user/CCSA2425/
-hdfs dfs -mkdir /user/CCSA2425/mcc50600265
+hdfs dfs -mkdir /user/CCSA2425/spark
+hdfs dfs -chown spark:spark /user/CCSA2425/spark
 ```
 
 

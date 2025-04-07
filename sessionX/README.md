@@ -29,7 +29,7 @@ Tabla de contenido:
 
 Desde su lanzamiento, Apache Spark ha sido adoptado rápidamente por empresas de una amplia gama de industrias y prácticamente se ha convertido en el estándar de-facto para el procesamiento de datos de gran volumen. Empresas de Internet tan conocidas como Netflix, Yahoo y eBay han desplegado Spark a escala masiva, procesando colectivamente múltiples petabytes de datos en clusters de más de 8.000 nodos. Se ha convertido rápidamente en la mayor comunidad de código abierto en Big Data, con más de 1.000 colaboradores de más de 250 organizaciones.
 
-Entre las características de Spak cabe mencionar:
+Entre las características de Spark cabe mencionar:
 - Velocidad: Diseñado de abajo hacia arriba para el rendimiento, **Spark puede llegar a ser 100 veces más rápido que Hadoop para el procesamiento de datos a gran escala** explotando el uso de memoria y otras optimizaciones. Spark también es rápido cuando los datos se almacenan en el disco, y actualmente tiene el récord mundial de ordenación a gran escala en disco.
 - Facilidad de uso: Spark tiene APIs fáciles de usar para operar en grandes conjuntos de datos. Esto incluye una colección de más de 100 operadores para transformar datos y API de marcos de datos familiares para manipular datos semiestructurados. Un ejemplo sencillo en Python de la expresividad de su API puede verse en este código, que permite consultar datos de una forma muy flexible (lee un json, selecciona los datos con `age>21` y luego devuelve la columna (path en json / key) `name.first` ):
 ```
@@ -110,7 +110,9 @@ services:
     depends_on:
       - namenode
       - datanode
-
+    networks:
+      - hadoop
+      
 volumes:
   namenode:
   datanode:
@@ -138,7 +140,7 @@ USER 1001
 
 ```
 
-**Si trabajas sobre el servidor de prácticas tienes que cambiar los puertos de la instalación a puertos que tienes asignado.**
+**Si trabajas sobre el servidor de prácticas tienes que cambiar los puertos externos 9870 y 9864 a puertos que tienes asignado.**
 
 Luego, te puedes conectar con `docker exec -it spark bash`
 
@@ -173,12 +175,14 @@ wget https://raw.githubusercontent.com/mattf/joyce/master/james-joyce-ulysses.tx
 El `namenode` tiene una carpeta `/data` que se monta desde `~/data`
 
 2.- Mover el fichero a hdfs:
+
 ```
 hdfs dfs -put james-joyce-ulysses.txt /user/your-username 
 ```
 
 3.- Crear un fichero `wordcount.py` con el siguiente código fuente: 
-```
+
+```python
 import pyspark 
  
 if __name__ == "__main__":
@@ -426,7 +430,7 @@ cámbiale el nombre a `covid19.csv` y muévelo a HDFS.
 
 Para cargar como un CSV dentro de SPARK como un DataFrame
 ```
-df = spark.read.csv("hdfs://ulises.imuds.es:8020/user/your-username/covid19.csv",header=True,sep=",",inferSchema=True);
+df = spark.read.csv("hdfs://namenode:8020/user/your-username/covid19.csv",header=True,sep=",",inferSchema=True);
 df.printSchema() 
 ```
 Una vez hecho esto, `df` contiene un DataFrame para ser utilizado con toda la funcionalidad de Spark.
