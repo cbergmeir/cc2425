@@ -439,7 +439,8 @@ Una vez hecho esto, `df` contiene un DataFrame para ser utilizado con toda la fu
 Una vez creado el DataFrame es posible transformarlo en otro componente que permite el acceso al mismo mediante una sintaxis basada en SQL (ver https://spark.apache.org/docs/2.2.0/sql-programming-guide.html)
 
 Usando la variable anterior:
-```
+
+```python
 df.createOrReplaceTempView("test")
 sqlDF = spark.sql("SELECT * FROM test") 
 sqlDF.show()
