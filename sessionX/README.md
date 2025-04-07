@@ -261,8 +261,6 @@ Desde hadoop.ugr.es:
 
 Conectarse al contenedor de spark: `docker exec -it spark bash`, y luego ejecutar:
 
-TODO: CHEQUEAR.
-
 ```
 spark-submit --master spark://namenode:7077 --total-executor-cores 5 --executor-memory 1g wordcount.py
 ```
@@ -300,7 +298,7 @@ Para que el propio programa devuelva los datos ya procesados, debemos tener en c
 
 En el siguiente ejemplo podemos ver como hacer la misma función que el comando anterior, pero usando `.collect()` para recolectar los datos y mostrarlos en pantalla o guardarlos en un fichero de nuevo. Hay que tener cuidado con `collect()`, pues convierte un RDD a un objeto python equivalente, por lo que está limitado a los recursos del nodo.
 
-```
+```python
 import pyspark 
  
 if __name__ == "__main__":
@@ -386,7 +384,8 @@ Cuando cargamos un conjunto de datos para ser procesado en Spark (por ejemplo pr
 A partir de aquí, entrará en juego otra de las características básicas de estos RDD, y es que son inmutables. Una vez que hemos creado un RDD, éste no cambiará, sino que cada transformación (map, filter, flatMap, etc.) que apliquemos sobre él generará un nuevo RDD. Esto por ejemplo facilita mucho las tareas de procesamiento concurrente, ya que si varios procesos están trabajando sobre un mismo RDD el saber que no va a cambiar simplifica la gestión de dicha concurrencia. Cada definición de un nuevo RDD no está generando realmente copias de los datos. Cuando vamos aplicando sucesivas transformaciones de los datos, lo que estamos componiendo es una "receta" que se aplica a los datos para conseguir las transformaciones.
 
 Ejemplo de RDD simple:
-```
+
+```python
 #Lista general en Python:
 lista = ['uno','dos','dos','tres','cuatro']
 #Creamos el RDD de la lista:
