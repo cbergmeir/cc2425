@@ -66,6 +66,8 @@ hdfs dfs -ls /test
 hdfs dfs -cat /test/sample.txt
 ```
 
+## Test that Spark is working and can access HDFS
+
 Run pyspark:
 
 ```
