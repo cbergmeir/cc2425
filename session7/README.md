@@ -211,7 +211,7 @@ Then, we install openfaas using arkade:
 arkade install openfaas
 ```
 
-If you are on the server with user users also installing it and you run into an error, you can try to use your own temp directory for installation, with:
+If you are on the university server with other users also installing it and you run into an error, you can try to use your own temp directory for installation that may fix it, with:
 
 ```
 TMPDIR="$HOME/.local/tmp" arkade install openfaas
