@@ -209,7 +209,13 @@ minikube start
 Then, we install openfaas using arkade: 
 ```
 arkade install openfaas
-````
+```
+
+If you are on the server with user users also installing it and you run into an error, you can try to use your own temp directory for installation, with:
+
+```
+TMPDIR="$HOME/.local/tmp" arkade install openfaas
+```
 
 After the installation has completed, you will receive the commands you need to run, to log in and access the OpenFaaS Gateway service in Kubernetes.
 
