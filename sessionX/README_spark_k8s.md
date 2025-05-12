@@ -86,7 +86,7 @@ text_rdd = sc.textFile("hdfs://namenode:8020/test/sample.txt")
 print(text_rdd.count())
 ```
 
-## TODO NOT WORKING YET Run one config for all different users
+## TODO NOT WORKING YET Have all users using the same spark instance and HDFS
 
 ### Install helm and spark-operator
 
