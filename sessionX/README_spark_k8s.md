@@ -148,6 +148,8 @@ unset KUBECONFIG
 
 ### Run Pyspark for this user
 
+First, publish the my-custom-spark docker image to dockerhub, and replace the url in the commmand below.
+
 You can run Pyspark with the following commands
 
 **TODO: This is currently not working, it doesn't get resources assigned**
