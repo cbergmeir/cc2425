@@ -85,3 +85,94 @@ print(rdd.map(lambda x: x * x).collect())
 text_rdd = sc.textFile("hdfs://namenode:8020/test/sample.txt")
 print(text_rdd.count())
 ```
+
+## TODO NOT WORKING YET Run one config for all different users
+
+### Install helm and spark-operator
+
+download from the original web page and unzip.
+
+Then, do:
+
+Add the Helm repository
+
+```
+helm repo add spark-operator https://kubeflow.github.io/spark-operator
+helm repo update
+```
+
+Install the operator into the spark-operator namespace and wait for deployments to be ready
+
+```
+helm install spark-operator spark-operator/spark-operator \
+    --namespace spark-operator --create-namespace --wait
+```
+
+Create an example application in the default namespace
+
+```
+kubectl apply -f https://raw.githubusercontent.com/kubeflow/spark-operator/refs/heads/master/examples/spark-pi.yaml
+```
+
+Get the status of the application
+
+```
+kubectl get sparkapp spark-pi
+``` 
+
+### Create the yaml for the user
+
+Use [this script here](setup_user_namespace.sh) to set up a user, for example user test00:
+
+```
+./setup_user_namespace.sh test00
+```
+
+The user and all of its pods etc. can be deleted with
+
+```
+kubectl delete namespace test00
+```
+
+The sh script generates a kubeconfig yaml file. You can now connect as this user by using this yaml file as follows.
+
+```
+export KUBECONFIG=~/spark_operator/kubeconfigs/test00-kubeconfig
+```
+
+You can go back to the normal user by:
+
+```
+unset KUBECONFIG
+```
+
+### Run Pyspark for this user
+
+You can run Pyspark with the following commands
+
+**TODO: This is currently not working, it doesn't get resources assigned**
+
+```
+USER_NS=user-test00
+IMG=docker.io/cbergmeir/my-custom-spark:latest
+
+kubectl delete pod pyspark-shell -n "${USER_NS}" --ignore-not-found
+
+kubectl run pyspark-shell \
+  --namespace="${USER_NS}" \
+  --image="${IMG}" \
+  --restart=Never -it \
+  --overrides='{"spec":{"serviceAccountName":"spark"}}' \
+  -- /opt/bitnami/spark/bin/pyspark \
+       --master k8s://https://kubernetes.default.svc:443 \
+       --conf spark.kubernetes.namespace=${USER_NS} \
+       --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+       --conf spark.kubernetes.container.image=${IMG} \
+       --conf spark.kubernetes.authenticate.caCertFile=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+       --conf spark.executor.instances=1 \
+       --conf spark.executor.cores=1 \
+       --conf spark.executor.memory=1g \
+       --conf spark.kubernetes.executor.request.cores=0.5 \
+       --conf spark.hadoop.fs.defaultFS=hdfs://namenode.default:8020
+```
+
